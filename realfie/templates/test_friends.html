@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="clearfix"></div>
+    {% if friends %}
+        <a href="{% url 'erase_results' fbid=fbid %}">Erase results</a>
+        <ul class="friend-list">
+        {% for friend in friends %}
+            <li><img src="{{ friend.photo }}" /><br />{{ friend.name }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        There's nothing here. The results haven't arrived yet. <a href="{% url 'erase_results' fbid=fbid %}">Erase results?</a>
+    {% endif %}
+{% endblock %}

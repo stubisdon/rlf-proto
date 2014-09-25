@@ -1,0 +1,12 @@
+SHELL=/bin/bash
+
+PROJECT_NAME=realfie
+BIND_TO=0.0.0.0
+RUNSERVER_PORT=8000
+MAILSERVER_PORT=1025
+SETTINGS=$(PROJECT_NAME).settings.default
+PYTHONPATH=$(CURDIR):$(CURDIR)/$(PROJECT_NAME)
+
+
+MANAGE=PYTHONPATH=$(PYTHONPATH) DJANGO_SETTINGS_MODULE=$(SETTINGS) python -W ignore::DeprecationWarning -W ignore::RuntimeWarning manage.py
+MANAGE_DOWN=PYTHONPATH=$(PYTHONPATH) DJANGO_SETTINGS_MODULE=$(SETTINGS) python -W ignore::DeprecationWarning -W ignore::RuntimeWarning ../manage.py

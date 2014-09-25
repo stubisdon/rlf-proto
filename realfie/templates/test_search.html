@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit" />
+    </form>
+    <div>
+    <h3>A few test Facebook users</h3>
+    <ul>
+        <li><a href="{% url 'test_friends' fbid=1360009562 %}">Dmitry Kotov</a></li>
+        <li><a href="{% url 'test_friends' fbid=1326651316 %}">Boris Goncharov</a></li>
+        <li><a href="{% url 'test_friends' fbid=1342464636 %}">Vasily Danilenko</a></li>
+        <li><a href="{% url 'test_friends' fbid=1135486297 %}">Michael Turutanov</a></li>
+    </ul>
+
+    </div>
+{% endblock %}
