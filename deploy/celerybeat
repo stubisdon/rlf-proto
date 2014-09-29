@@ -1,0 +1,5 @@
+CELERY_BIN="/home/mt/.virtualenvs/rlf/bin/celery"
+
+CELERYD_CHDIR="/home/mt/rlf-proto"
+
+CELERY_APP="realfie"

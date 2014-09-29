@@ -15,8 +15,6 @@
     </div>
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="{% static "js/core.js" %}"></script>
-    <script>
-      var csrf_token = '{{ csrf_token }}';
-    </script>
+    {% block extra_js %}{% endblock %}
     </body>
 </html>

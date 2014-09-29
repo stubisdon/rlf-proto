@@ -55,3 +55,5 @@ target/
 
 # Celery
 *.pid
+
+*.sqlite3

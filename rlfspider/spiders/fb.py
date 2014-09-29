@@ -7,7 +7,7 @@ from rlfspider.items import ProfileItem
 
 REGEXES = {
     'bp_initial': re.compile('bigPipe.onPageletArrive\((\{.*"content":\{"initial_browse_result".*)\)'),
-    'bp_browse': re.compile('bigPipe.onPageletArrive\((\{.*"content":\{"browse_result_below_fold".*)\)'),
+    'bp_browse': re.compile('bigPipe.onPageletArrive\((\{.*browse_result_below_fold":\{"container_id".*)\)'),
 }
 
 MAX_PAGES = 3
@@ -37,7 +37,7 @@ class FbSpider(Spider):
                 return
 
         url = 'https://www.facebook.com/search/{0}/pages-liked/likers/{0}/friends/friends/intersect'.format(self.rlf_user.fbid)
-        self.log(url, level=log.INFO)
+        self.log("Query URL: {0}".format(url), level=log.INFO)
         #'https://www.facebook.com/search/me/friends',
 
         return Request(url, dont_filter=True, callback=self.page_parse)
@@ -63,17 +63,17 @@ class FbSpider(Spider):
                     data = r[3][1]
                     break
 
+            if not data:
+                self.log("Got no data for the next page!", level=log.ERROR)
+                return
+
             self.log("Page request data: {0}".format(data), level=log.INFO)
 
             # contains cursor to the next page
             try:
                 requires = json.loads(REGEXES['bp_browse'].findall(body)[0])['jsmods']['require']
             except IndexError:
-                if s.xpath('//div[@id="browse_result_area"]/div/div/div/div/text()').extract() == "No results":
-                    self.log("No results for this search.", level=log.INFO)
-                else:
-                    self.log("Cursor not found on the first page!", level=log.ERROR)
-
+                self.log("Cursor not found on the first page!", level=log.ERROR)
                 return
 
         else:

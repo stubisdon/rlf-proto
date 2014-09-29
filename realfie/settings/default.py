@@ -30,6 +30,7 @@ INSTALLED_APPS = (
     'djcelery',
     'test_pep8',
     'easy_thumbnails',
+    'django_facebook',
 
     'realfie.core',
 )
@@ -43,6 +44,29 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.core.context_processors.request",
+    "django.contrib.messages.context_processors.messages",
+    "django_facebook.context_processors.facebook",
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django_facebook.auth_backends.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_USER_MODEL = 'django_facebook.FacebookCustomUser'
+
+FACEBOOK_STORE_LIKES = True
+
+FACEBOOK_STORE_FRIENDS = True
 
 ROOT_URLCONF = 'realfie.urls'
 
