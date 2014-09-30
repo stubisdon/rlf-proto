@@ -1,18 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit" />
-    </form>
-    <div>
-    <h3>A few test Facebook users</h3>
-    <ul>
-        <li><a href="{% url 'test_friends' fbid=1360009562 %}">Dmitry Kotov</a></li>
-        <li><a href="{% url 'test_friends' fbid=1326651316 %}">Boris Goncharov</a></li>
-        <li><a href="{% url 'test_friends' fbid=1342464636 %}">Vasily Danilenko</a></li>
-        <li><a href="{% url 'test_friends' fbid=1135486297 %}">Michael Turutanov</a></li>
-    </ul>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}?next=/">logout</a>
+        <h2>{{ me.first_name }} {{ me.last_name }}<br />FBID: <a href="{{ me.link }}">{{ me.id }}</a></h2>
 
+        <div class="clearfix"></div>
+        {% if not task.status %}
+            The task hasn't started (yet?).
+        {% elif task.status == 'P' %}
+            Task in progress (Fetching profiles...)
+        {% elif task.status == 'F' %}
+            Task failed (probably no search results).
+        {% elif task.status == 'OK' %}
+            Task completed (Fetched {{ entry_count }} profiles in {{ task_time }} seconds).
+
+            <a href="{% url 'erase_results' task=task.pk %}">Try again?</a>
+            <ul class="friend-list">
+            {% for friend in friends %}
+                <li><img src="{{ friend.photo }}" /><br />{{ friend.name }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'social:begin' 'facebook' %}?next=/">Log in with facebook</a>
+
+        <h3>Manual testing</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit" />
+        </form>
+        <div>
+        <h3>A few test Facebook users</h3>
+        <ul>
+            <li><a href="{% url 'test_friends' fbid=1360009562 %}">Dmitry Kotov</a></li>
+            <li><a href="{% url 'test_friends' fbid=1326651316 %}">Boris Goncharov</a></li>
+            <li><a href="{% url 'test_friends' fbid=1342464636 %}">Vasily Danilenko</a></li>
+            <li><a href="{% url 'test_friends' fbid=1135486297 %}">Michael Turutanov</a></li>
+        </ul>
+    {% endif %}
     </div>
 {% endblock %}

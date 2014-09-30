@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     'test_pep8',
     'easy_thumbnails',
     'django_facebook',
+    'social.apps.django_app.default',
 
     'realfie.core',
 )
@@ -54,17 +55,21 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
-    "django_facebook.context_processors.facebook",
+
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
+#    "django_facebook.context_processors.facebook",
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django_facebook.auth_backends.FacebookBackend',
+    'social.backends.facebook.FacebookOAuth2',
+#    'django_facebook.auth_backends.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_USER_MODEL = 'django_facebook.FacebookCustomUser'
+#AUTH_USER_MODEL = 'django_facebook.FacebookCustomUser'
 
-FACEBOOK_STORE_LIKES = True
+#ACEBOOK_STORE_LIKES = True
 
 FACEBOOK_STORE_FRIENDS = True
 

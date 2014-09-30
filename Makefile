@@ -15,7 +15,8 @@ mailserver:
 
 syncdb:
 	@echo Syncing...
-	$(MANAGE) syncdb --noinput
+	$(MANAGE) makemigrations
+	$(MANAGE) syncdb
 	$(MANAGE) migrate
 	@echo loading initial data
 	$(MANAGE) loaddata $(PROJECT_NAME).json

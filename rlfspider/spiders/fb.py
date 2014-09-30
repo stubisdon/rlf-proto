@@ -10,7 +10,7 @@ REGEXES = {
     'bp_browse': re.compile('bigPipe.onPageletArrive\((\{.*browse_result_below_fold":\{"container_id".*)\)'),
 }
 
-MAX_PAGES = 3
+MAX_PAGES = 10
 
 class FbSpider(Spider):
     name = "fb"
@@ -65,15 +65,19 @@ class FbSpider(Spider):
 
             if not data:
                 self.log("Got no data for the next page!", level=log.ERROR)
+                self.rlf_user.status = 'F'
+                self.rlf_user.save()
                 return
 
-            self.log("Page request data: {0}".format(data), level=log.INFO)
+            #self.log("Page request data: {0}".format(data), level=log.INFO)
 
             # contains cursor to the next page
             try:
                 requires = json.loads(REGEXES['bp_browse'].findall(body)[0])['jsmods']['require']
             except IndexError:
                 self.log("Cursor not found on the first page!", level=log.ERROR)
+                self.rlf_user.status = 'F'
+                self.rlf_user.save()
                 return
 
         else:
@@ -121,6 +125,8 @@ class FbSpider(Spider):
             if r[0] == 'BrowseScrollingPager':
                 data.update(r[3][0])
                 break
+
+        self.log("Page request data: {0}".format(data), level=log.INFO)
 
         # prepare for next page
         url = '{0}?data={1}&__a=1'.format(
