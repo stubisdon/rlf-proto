@@ -1,5 +1,5 @@
 from django.contrib.admin import ModelAdmin, site
-from realfie.core.models import FbUser, RlfUser, FbTask
+from realfie.core.models import FbUser, FbPage, RlfUser, FetchTask
 
 
 class FbUserAdmin(ModelAdmin):
@@ -8,9 +8,13 @@ class FbUserAdmin(ModelAdmin):
 class RlfUserAdmin(ModelAdmin):
     pass
 
-class FbTaskAdmin(ModelAdmin):
+class FetchTaskAdmin(ModelAdmin):
+    pass
+
+class FbPageAdmin(ModelAdmin):
     pass
 
 site.register(FbUser, FbUserAdmin)
-site.register(FbTask, FbTaskAdmin)
+site.register(FetchTask, FetchTaskAdmin)
+site.register(FbPage, FbPageAdmin)
 site.register(RlfUser, RlfUserAdmin)

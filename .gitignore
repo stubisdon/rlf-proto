@@ -55,5 +55,7 @@ target/
 
 # Celery
 *.pid
+celerybeat-schedule
 
+# DB
 *.sqlite3

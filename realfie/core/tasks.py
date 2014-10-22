@@ -7,6 +7,6 @@ from crawl import run_spider
 
 
 @shared_task
-def test_search(rlf_user):
-    run_spider(rlf_user)
+def fetch_fb(task_entry):
+    run_spider(task_entry)
     return

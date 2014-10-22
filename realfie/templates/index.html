@@ -1,2 +1,243 @@
-{% extends 'base.html' %}
-{% block content %}Hello World!{% endblock %}
+{% load staticfiles %}<!DOCTYPE html>
+<html lang="ru">
+  <head>
+
+    <title>Realfie — This app will find your soulmate by interests</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Realfie — This app will find your soulmate by interests">
+    <meta name="author" content="Lenya Pugachev">
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+	  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+
+    <link rel="stylesheet" href="{% static 'index.css' %}" />
+    <link rel="stylesheet" href="{% static 'libraries/animate.css' %}" />
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+
+    <!--div id="score" class="score">0</div>
+    <div id="score2" class="score">0</div>
+    <div id="score3" class="score">0</div>
+    <div id="score4" class="score">0</div-->
+
+    <div class="background-video" id="main-video">
+      <div class="dataH h">
+        <div class="logo"></div>
+        <div class="close"></div>
+        <div class="video"></div>
+      </div>
+      <div class="data">
+        <div class="logo"></div>
+        <div class="semibold slogan">This app will find your soulmate<br>by interests</div>
+        <div class="play"></div>
+      </div>
+      <div class="subscribe">
+        <div class="title light">Получи ссылку на Realfie раньше остальных</div>
+        <div class="top-input"><input type="text" id="top-input" placeholder="Введите свой электронный адрес..."><div class="button topbtn"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
+      c-0.388-0.388-1.017-0.388-1.404,0c-0.388,0.388-0.388,1.017,0,1.404l5.309,5.309H1c-0.552,0-1,0.448-1,1c0,0.552,0.448,1,1,1
+      h18.596l-5.309,5.309c-0.388,0.388-0.388,1.017,0,1.404s1.017,0.388,1.404,0l6.958-6.959c0.02-0.017,0.045-0.023,0.064-0.041
+      c0.031-0.031,0.031-0.074,0.057-0.108c0.085-0.105,0.145-0.22,0.181-0.344c0.013-0.048,0.022-0.09,0.027-0.139
+      C23.019,7.829,22.942,7.519,22.713,7.291z"/></g></svg></div></div>
+        <div class="semibold thankyou h">Мы с вами свяжемся! Хорошего дня!</div>
+      </div>
+      <div class="fg"></div>
+      <div class="bg"></div>
+    </div>
+
+    <div class="background-video acc" id="second">
+      <div class="data circles">
+        <div class="left-circle circle">
+          <div class="c c1 n1"></div>
+          <div class="c c9 n2"></div>
+          <div class="c c3 n3"></div>
+          <div class="c c11 n4"></div>
+          <div class="c c5 n5"></div>
+          <div class="c c6 n6"></div>
+          <div class="c c7 n7"></div>
+          <div class="c c8 n8"></div>
+        </div>
+        <div class="right-circle circle">
+          <div class="c c6 n1"></div>
+          <div class="c c7 n2"></div>
+          <div class="c c8 n3"></div>
+          <div class="c c1 n4"></div>
+          <div class="c c9 n5"></div>
+          <div class="c c3 n6"></div>
+          <div class="c c11 n7"></div>
+          <div class="c c5 n8"></div>
+        </div>
+        <div class="action-circle"></div>
+        <div class="question"></div>
+      </div>
+      <div class="fg"></div>
+      <div class="bg"></div>
+    </div>
+
+    <div class="stripes acc">
+      <div class="red">
+        <div class="bold">Тебе не нужно <br>просматривать <br>сотни людей, чтобы <br>найти того,</div>
+        <div class="semibold">кто тебе <br>интересен.</div>
+      </div>
+      <div class="yel">
+        <div class="bold">Представь,что у тебя <br>есть кое-что получше <br>для незнакомого <br>человека, чем</div>
+        <div class="semibold">&laquo;Привет, <br>как дела?&raquo;</div>
+      </div>
+      <div class="blu">
+        <div class="bold">Мы не хотим, <br>чтобы ты заполнял <br>километровые <br>анкеты в профиле.</div>
+        <div class="semibold">Нам это <br>не нужно.</div>
+      </div>
+      <div class="gre">
+        <div class="bold">Не нужно платить <br>за то, что хочешь <br>с кем-то общаться.</div>
+        <div class="semibold">Все очень <br>просто.</div>
+      </div>
+    </div>
+
+    <div class="first-info">
+      <div class="semibold h1">Мы чекинимся, лайкаем, шерим, любим</div>
+      <div class="semibold h3">Мы создаем вокруг себя социальный круг интересов.<br>Realfie это там, где пересекаются круги.</div>
+    </div>
+
+    <div class="white-board board acc">
+      <div class="slogan semibold">
+        Realfie сам подберет тебе нужные знакомства учитывая твою социальную активность.
+      </div>
+    </div>
+
+    <div class="sloganp semibold">Это будет не просто первый попавшийся «сингл». У вас будет много общего.</div>
+    
+    <div class="pink-board board acc"></div>
+
+    <div class="scroll-down r">
+      <div class="semibold">Крутите вниз</div>
+      <div class="down">
+        <svg width="6px" height="3px" viewBox="0 0 597 294" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Page-1" stroke="none" stroke-width="2" fill="none" fill-rule="evenodd"><path d="M297,0 L597,294 L297,0 Z" stroke="currentColor" stroke-width="5" transform="translate(447.000000, 147.000000) scale(1, -1) translate(-447.000000, -147.000000) "></path><path d="M0,0 L300,294 L0,0 Z" stroke="currentColor" stroke-width="5" transform="translate(150.000000, 147.000000) scale(-1, -1) translate(-150.000000, -147.000000) "></path></g></svg>
+      </div>
+    </div>
+
+    <div class="iphone-black white acc">
+      <div class="surf delay d"></div>
+      <div class="surf-shadow delay d"></div>
+      <div class="nfl delay d"></div>
+      <div class="screen"></div>
+      <div class="iphone"></div>
+      <div class="books d"></div>
+    </div>
+
+    <div class="black-funeral-shit">
+      <div class="semibold small">Похоже, тебе есть с чего начать разговор и даже есть...</div>
+      <div class="semibold big b1">о чем поболтать в Парке Горького</div>
+      <div class="semibold big b2 h">фильм, который вам обоим нужно пересмотреть</div>
+      <div class="semibold big b3 h">книга, которую вам надо обсудить</div>
+    </div>
+
+    <div class="background-video loader-video loaders">
+      <div class="data">
+        <div class="semibold big">Хочешь узнать как все происходит?</div>
+        <div class="light small">Попробуй прямо здесь и сейчас.</div>
+        <div class="semibold facebook">Подключиться к facebook</div>
+      </div>
+      <div class="loader">
+        <div class="left l1"></div>
+        <div class="right l1"></div>
+        <div class="action"></div>
+        <div class="light status"></div>
+        <div class="ongoing animated"></div>
+      </div>
+      <div class="error animated"><div class="message light">Не удалось ничего найти <span></span></div><div class="ok">OK</div></div>
+      <div class="fg"></div>
+      <div class="bg">
+        <!--video muted loop id="bgvid">
+          <source src="test.mp4" type="video/mp4">
+          <source src="test.webm" type="video/webm">
+        </video-->
+      </div>
+    </div>
+
+    <div class="connect fb-connect loaders">
+      <div class="paging">
+        <div class="first"></div><div class="second"></div>
+      </div>
+      <div class="semibold h1">Мы подключились к вашему аккаунту facebook</div>
+      <div class="semibold h3">И вот что у нас получилось</div>
+      <div class="entries"></div>
+      <div class="add">
+        <div class="dude"></div>
+        <div class="semibold info">Вы хотите узнать кто из людей с похожими интересами ходит в те же места, что и вы?</div>
+        <div class="arial instagram">Подключиться к Instagram</div>
+      </div>
+    </div>
+
+    <div class="connect in-connect loaders">
+      <div class="paging">
+        <div class="first"></div><div class="second"></div><div class="third"></div>
+      </div>
+      <div class="semibold h1">А теперь и к аккаунту в instagram</div>
+      <div class="semibold h3">Вот вам еще одна родственная душа. Пора сближаться!</div>
+      <div class="entries"></div>
+    </div>
+
+    <div class="connect closer-page loaders">
+      <div class="paging">
+        <div class="first"></div><div class="second"></div><div class="third"></div><div class="fourth"></div>
+      </div>
+      <div class="semibold h1">Если ты уверен<span class="y"></span>, что это <span class="hh">та самая</span> — не робей</div>
+      <div class="semibold h3 f">После шаринга ваш результат попадет к вам на стену, а <span>девушка</span> получит уведомление</div>
+      <div class="main">
+        <div class="you"></div>
+        <div class="connection">
+          <div class="arial tip">Кто бы мог подумать, что вы <span>слушаете одного и того же исполнителя</span></div>
+          <div class="arial start">Начать сближение</div>
+        </div>
+        <div class="himher"><div class="soc-icon"></div></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="top">
+        <div class="semibold h1">Уже хочешь скачать?</div>
+        <div class="light h3">Получи ссылку на Realfie раньше остальных</div>
+        <div class="foot-input"><input type="text" id="foot-input" placeholder="Ваш электронный адрес"><div class="button btmbtn"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
+      c-0.388-0.388-1.017-0.388-1.404,0c-0.388,0.388-0.388,1.017,0,1.404l5.309,5.309H1c-0.552,0-1,0.448-1,1c0,0.552,0.448,1,1,1
+      h18.596l-5.309,5.309c-0.388,0.388-0.388,1.017,0,1.404s1.017,0.388,1.404,0l6.958-6.959c0.02-0.017,0.045-0.023,0.064-0.041
+      c0.031-0.031,0.031-0.074,0.057-0.108c0.085-0.105,0.145-0.22,0.181-0.344c0.013-0.048,0.022-0.09,0.027-0.139
+      C23.019,7.829,22.942,7.519,22.713,7.291z"/></g></svg></div></div>
+        <div class="semibold thankyou h">Мы с вами свяжемся! Хорошего дня!</div>
+      </div>
+      <div class="mid">
+        <div class="bold h1">Пресса о Realfie</div>
+        <div class="press">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="tell-friends semibold">Расскажи о нас друзьям</div>
+        <div class="soc"><a class="fb" href="https://www.facebook.com/" target="_blank"><div></div></a><a class="twi" href="https://www.facebook.com/" target="_blank"><div></div></a><a class="vk" href="https://www.facebook.com/" target="_blank"><div></div></a><a class="goo" href="https://www.facebook.com/" target="_blank"><div></div></a></div>
+        <div class="logo"></div>
+        <div class="copyright light">This app will find your soulmate by interests. All rights reserved.<br>realfie.com</div>
+      </div>
+    </div>
+
+    <div class="container"></div>
+
+    <!--script src="/libraries/preventer.js"></script-->
+    <script src="{% static 'libraries/zepto.min.js' %}"></script>
+    <script src="{% static 'libraries/stt.zepto.js' %}"></script>
+    <script src="{% static 'libraries/prefix.zepto.js' %}"></script>
+    <script src="{% static 'libraries/oauth.min.js' %}"></script>
+	  <script src="{% static 'index.js' %}"></script>
+
+  </body>
+</html>

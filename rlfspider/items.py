@@ -12,3 +12,12 @@ class ProfileItem(scrapy.Item):
     id = scrapy.Field()
     name = scrapy.Field()
     photo = scrapy.Field()
+    link = scrapy.Field()
+
+class PageItem(scrapy.Item):
+    id = scrapy.Field()
+    name = scrapy.Field()
+    photo = scrapy.Field()
+    type = scrapy.Field()
+    link = scrapy.Field()
+    liked_by = scrapy.Field()
