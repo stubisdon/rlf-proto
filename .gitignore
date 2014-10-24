@@ -59,3 +59,6 @@ celerybeat-schedule
 
 # DB
 *.sqlite3
+
+# OSX
+.DS_Store

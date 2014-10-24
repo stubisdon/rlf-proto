@@ -4,7 +4,7 @@ import re, codecs, json, urllib
 from scrapy import Selector, Spider, log
 from scrapy.http import Request, FormRequest
 from rlfspider.items import ProfileItem, PageItem
-from realfie.core.models import FbUser
+from realfie.core.models import FbUser, FbAccount
 
 REGEXES = {
     'bp_initial': re.compile('bigPipe.onPageletArrive\((\{.*"content":\{"initial_browse_result".*)\)'),
@@ -12,9 +12,11 @@ REGEXES = {
     'url_noparams': re.compile('\?.*'),
 }
 
-MAX_PAGES = 10
 
 class FbSpider(Spider):
+    MAX_PAGES = 3
+    CARDS_PER_PAGE = 12
+
     name = "fb"
     allowed_domains = ["facebook.com"]
     start_urls = (
@@ -24,12 +26,17 @@ class FbSpider(Spider):
     def __init__(self, task_entry, *args, **kwargs):
         self.task_entry = task_entry
         self.fbuser = FbUser.objects.filter(fbid=task_entry.uid).first()
+
+        fbacc = FbAccount.objects.all().first()
+        self.fbemail = fbacc.email
+        self.fbpassword = fbacc.password
+
         return super(FbSpider, self).__init__(*args, **kwargs)
 
     def parse(self, response):
         data = {
-            'email':'turutanov@gmail.com',
-            'pass':'fgh!!!34',
+            'email': self.fbemail,
+            'pass': self.fbpassword,
         }
 
         return [FormRequest.from_response(response, formname='login_form', formdata=data, callback=self.after_login)]
@@ -41,12 +48,16 @@ class FbSpider(Spider):
 
         fbid = self.fbuser.fbid
         gender = 'females' if self.fbuser.gender == 'male' else 'males'
-        url = 'https://www.facebook.com/search/{0}/residents-near/intersect/{0}/pages-liked/likers/{0}/friends/friends/{1}/intersect'.format(fbid, gender)
-        self.log("Query URL: {0}".format(url), level=log.INFO)
+        #url = 'https://www.facebook.com/search/{0}/residents-near/intersect/{0}/pages-liked/likers/{0}/friends/friends/{1}/intersect'.format(fbid, gender)
+        # Few days later, Facebook limited residents-near to 'me'. They are probably monitoring the slowest graph search requests.
+        url = 'https://www.facebook.com/search/{0}/pages-liked/likers/{0}/friends/friends/{1}/intersect'.format(fbid, gender)
 
         return Request(url, dont_filter=True, callback=self.page_parse)
 
     def page_parse(self, response):
+        self.log("Query URL: {0}".format(response.url), level=log.INFO)
+
+
         data = response.meta.get('data')
         card_class = response.meta.get('card_class')
         liked_by = response.meta.get('liked_by')
@@ -57,7 +68,7 @@ class FbSpider(Spider):
             s = Selector(response)
 
             hidden_elems = s.xpath('//code[@class="hidden_elem"]/comment()').extract()
-            # FIXME
+            # ugh
             payload = ''.join([e[5:-4] for e in hidden_elems if 'sub_headers&quot;&#125;' in e])
 
             if not liked_by:
@@ -128,9 +139,11 @@ class FbSpider(Spider):
                     link=link
                 )
 
+                # fetch pages-liked
                 url = 'https://www.facebook.com/search/{0}/pages-liked/{1}/pages-liked/intersect?ref=snippets'.format(self.fbuser.fbid, lid)
                 request = Request(url, dont_filter=True, callback=self.page_parse)
                 request.meta['liked_by'] = lid
+                request.meta['card_class'] = card_class
                 yield request
         else:
             for e in profile_elems:
@@ -138,16 +151,21 @@ class FbSpider(Spider):
                 link = e.xpath(".//div[@data-bt='{\"ct\":\"title\"}']/a/@href")[0].extract()
                 link = REGEXES['url_noparams'].sub('', link)
                 
+                try:
+                    t = e.xpath(".//div[@data-bt='{\"ct\":\"sub_headers\"}']/text()")[0].extract()
+                except IndexError:
+                    t = None
+
                 yield PageItem(
                     id=lid,
                     name=e.xpath(".//div[@data-bt='{\"ct\":\"title\"}']/a/text()")[0].extract(),
-                    type=e.xpath(".//div[@data-bt='{\"ct\":\"sub_headers\"}']/text()")[0].extract(),
+                    type=t,
                     photo=e.xpath(".//a[@data-bt='{\"ct\":\"image\"}']/img/@src")[0].extract(),
                     link=link,
                     liked_by=response.meta['liked_by']
                 )            
 
-        if page_number >= MAX_PAGES or liked_by:
+        if page_number >= self.MAX_PAGES or liked_by:
             return
 
         # is last page?

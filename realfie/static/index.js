@@ -1,4 +1,5 @@
-var global = { firstH: $(window).height(), old: 0, oTop: 0, play: false, task: false, inputhover: false, lastIcon: null, closers: [], reqi: 0, req: false, reqspeed: 3000, fbcancel: false, fbloop: null, fbuser: 0, fbgender: null, fbat: null, incancel: false, inloop: null, inat: null, inuser: 0, inimage: null, inflag: false, anim: null, anim2: null  };
+var global = { reqspeed: 3000, firstH: $(window).height(), locked: false, lasttop: 0, old: 0, oTop: 0, play: false, inputhover: false, lastIcon: null, closers: [], reqi: 0, fbcancel: false, fbloop: null, fbuser: 0, fbgender: null, incancel: false, inloop: null, inuser: 0, inimage: null, inflag: false, anim: null, anim2: null, ianim: 1 };
+
 var types = [	["ь", "и", "ей"], // не редактировать
 				["место", "места", "мест", "ходите в одно и то же место"], // 1
 				["блюдо", "блюда", "блюд", "любите одно и то же блюдо"], // 2
@@ -6,6 +7,24 @@ var types = [	["ь", "и", "ей"], // не редактировать
 				["книга", "книги", "книг", "читали одну и ту же книгу"], //4
 				["лайк", "лайка", "лайков", "лайкаете одно и то же"] //5
 			];
+
+var locale = {
+	restrict: "Разрешите инстаграму общаться с Realfie во всплывающем окне",
+	almostThere: "Поиск вот-вот начнется",
+	started: "Поиск начался...",
+	places: ["место", "места", "мест"],
+	progress: "Поиск завершен на",
+	uniq: "потому что вы, видимо, слишком уникальны. Может в следующий раз повезет!",
+	alsoLike: "Также как и вы любит",
+	alsoPlace: "Также как и вы ходит в",
+	also: "и еще",
+	close: "Сблизиться",
+	him: "тот самый",
+	her: "та самая",
+	boy: "парень",
+	girl: "девушка"
+};
+
 Zepto(function($){
 
 	OAuth.initialize('l_apl0rGv3ODyhXFCHLj16EdcyY');
@@ -59,8 +78,7 @@ Zepto(function($){
 				break;
 			}
 			global.old = i;
-
-			//double check
+			
 			if(i!==0) {
 				$("#main-video .data").removeClass("h");
 				$("#main-video .dataH").addClass("h");
@@ -107,7 +125,7 @@ Zepto(function($){
 			if(i>10) $(".iphone-black .screen").css("background-position", "0 -1146px");
 
 			if(i>11) {
-				$(".iphone-black").css("transform", "translateY(-130%)");
+				$(".iphone-black").css("transform", "translateY(-150%)");
 				$(".loaders").css("top", 0);
 			}
 
@@ -141,160 +159,159 @@ Zepto(function($){
 			d = top >= global.oTop ? 'down' : 'up',
 			u = Math.ceil(top/h);
 
-		global.oTop = top;
-		switcher(u, d);
+		if(global.locked) {
+	        event.target.scrollTop = global.lasttop;
+	    }else{
 
-		$(".container").css("height", h*15+1+"px");
+			global.oTop = top;
+			switcher(u, d);
 
-		if(top>0 && top<h) {
-			var o = h-top;
-			$(".stripes .yel").css("margin-top", (o/0.75)+"px");
-			$(".stripes .blu").css("margin-top", (o/0.5)+"px");
-			$(".stripes .gre").css("margin-top", (o/0.25)+"px");
-		}
+			$(".container").css("height", h*15+1+"px");
 
-		if(top>=h && top<h*2){
-			var o = h*2-top < h/4 ? (h*2-top)/(h/4) : 1;
-			$(".stripes .red > *").css("opacity", o.toFixed(2));
-			$(".stripes .yel > *").css("opacity", o.toFixed(2));
-			$(".stripes .blu > *").css("opacity", o.toFixed(2));
-			$(".stripes .gre > *").css("opacity", o.toFixed(2));
-		}
-
-		if(top>=h*2 && top<h*3){
-			var o = h*2-top;
-			$(".stripes .yel").css("margin-top", (o/0.75)+"px");
-			$(".stripes .blu").css("margin-top", (o/0.5)+"px");
-			$(".stripes .gre").css("margin-top", (o/0.25)+"px");
-		}
-
-		if(top>=h*3 && top<h*4){
-			var o = (h*4-top)/(h/100);
-			$(".iphone-black").css("transform", "translateY("+(o.toFixed(2)/100*150)+"%)");
-		}
-
-		if(top>=h*3 && top<h*5){
-			var o = (h*4-top)/(h/100);
-			$(".white-board").css("bottom", -o.toFixed(2)+"%");
-
-			if(o>80) {
-				$("#second").css("transform", "translateY(-"+(100-o.toFixed(2))+"%)!important");
-			}else{
-				$(".scroll-down").css("opacity", 1-o.toFixed(2)/80);
-				$("#second").css("transform", "translateY(-20%)!important");
+			if(top>0 && top<h) {
+				var o = h-top;
+				$(".stripes .yel").css("margin-top", (o/0.75)+"px");
+				$(".stripes .blu").css("margin-top", (o/0.5)+"px");
+				$(".stripes .gre").css("margin-top", (o/0.25)+"px");
 			}
 
-			if(o>15){
-				$("#second .circles").css({opacity: (o.toFixed(2)-15)/15});
-			}else{
-				$("#second .circles").css({opacity: 0});
-			}
-		}
-
-		if(top>=h*4 && top<h*5){
-			var o1 = h/2-150,
-				o2 = h/2+224;
-
-			o = top%h;
-			if(o>=o1 && o<=o2){
-				var r = (o-o1)/(o2-o1)*382;
-				$(".iphone-black .screen").css("background-position", "0 -"+r+"px");
-			}else if(o<o1){
-				$(".iphone-black .screen").css("background-position", "0 0px");
-			}else if(o>o2){
-				$(".iphone-black .screen").css("background-position", "0 -382px");
-			}
-		}
-
-		if(top>=h*6 && top<h*11){
-			var o = top/h,
-				r, t;
-			if(o>7){
-				r = (o.toFixed(2)-7)*382;
-				t = 100-(o-7)/3*100;
-			}else{
-				r = 0;
-				t = 100;
+			if(top>=h && top<h*2){
+				var o = h*2-top < h/4 ? (h*2-top)/(h/4) : 1;
+				$(".stripes .red > *").css("opacity", o.toFixed(2));
+				$(".stripes .yel > *").css("opacity", o.toFixed(2));
+				$(".stripes .blu > *").css("opacity", o.toFixed(2));
+				$(".stripes .gre > *").css("opacity", o.toFixed(2));
 			}
 
-			if(o>10) r = -1146;
-
-
-			$(".black-funeral-shit .big").removeClass("h").addClass("h");
-			if(o<8.4){
-				$(".black-funeral-shit .b1").removeClass("h");
-			}else if(o>=8.4 && o<=9.5) {
-				$(".black-funeral-shit .b2").removeClass("h");
-			}else{
-				$(".black-funeral-shit .b3").removeClass("h");
-
+			if(top>=h*2 && top<h*3){
+				var o = h*2-top;
+				$(".stripes .yel").css("margin-top", (o/0.75)+"px");
+				$(".stripes .blu").css("margin-top", (o/0.5)+"px");
+				$(".stripes .gre").css("margin-top", (o/0.25)+"px");
 			}
 
-			$(".black-funeral-shit").css("top", t.toFixed(2)+"%");
-			$(".iphone-black .screen").css("background-position", "0 -"+r+"px");
-		}
+			if(top>=h*3 && top<h*4){
+				var o = (h*4-top)/(h/100);
+				$(".iphone-black").css("transform", "translateY("+(o.toFixed(2)/100*150)+"%)");
+			}
 
-		if(top>=h*10 && top<h*11){
-			var o = (h*11-top)/h;
-			$(".iphone-black").css("transform", "translateY(-"+(1-o.toFixed(2))*130+"%)");
-			$(".loaders").css("top", o.toFixed(2)*100+"%");
-		}
+			if(top>=h*3 && top<h*5){
+				var o = (h*4-top)/(h/100);
+				$(".white-board").css("bottom", -o.toFixed(2)+"%");
 
-		if(top>=h*12 && top<h*14){
-			var o = (h*13-top)/h;
-			$(".loaders").css("top", -(1-o.toFixed(2))*100+"%");
-			$(".footer").css("top", o.toFixed(2)*100+"%");
-		}
-
-		if(top>=h*13) $(".footer").css("top", 0);
-
-		if(top>=h*4 && top<h*7){
-			var o = (h*6-top)/(h/100);
-			if(o<170) $(".sloganp").css("opacity", 1-(o-150)/20);
-			if(o<0) $(".sloganp").css("opacity", (o+65)/65);
-			$(".pink-board").css("bottom", -o.toFixed(2)+"%");
-		}
-
-		if(top>=h*6 && top<h*7){
-			var o = (h*7-top)/(h/20);
-			$(".iphone-black").css("right", 50-o.toFixed(2)+"%");
-		}
-
-		if(top>=h*2 && top<h*4){
-			var o = Math.ceil((h*5-top)/h*180),
-				d = 180-o,
-				a = [0, 45, 90, 135, 180, 225, 270, 315],
-				r = [315, 270, 225, 180, 135, 90, 45, 0];
-
-			for (var i = 0; i < a.length; i++) {
-				if(Math.abs(d) > a[i]-8 && Math.abs(d) < a[i]+8 && !$(".action-circle").hasClass("bounceIn")) {
-					if(global.lastIcon!==a[i]){
-						global.lastIcon = a[i];
-						$(".action-circle").addClass("bounceIn").css({ backgroundColor: '#ff3b57' });
-						$(".question").animate({opacity: 0.0001}, 100);
-						$(".action-circle").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-							$(".action-circle").removeClass("bounceIn").css({ backgroundColor: '#fff' });
-							$(".question").animate({opacity: 1}, 100);
-						});
-					}
+				if(o>80) {
+					$("#second").css("transform", "translateY(-"+(100-o.toFixed(2))+"%)!important");
+				}else{
+					$(".scroll-down").css("opacity", 1-o.toFixed(2)/80);
+					$("#second").css("transform", "translateY(-20%)!important");
 				}
 
-				var x = a[i]+d>=360 ? a[i]+d-360 : a[i]+d;
-					x = x<0 ? x+360 : x;
-				$(".left-circle .n"+(i+1)).css("transform", "rotate("+x+"deg) translate(125px) rotate(-"+x+"deg)");
+				if(o>15){
+					$("#second .circles").css({opacity: (o.toFixed(2)-15)/15});
+				}else{
+					$("#second .circles").css({opacity: 0});
+				}
 			}
 
-			for (var i = 0; i < r.length; i++) {
-				var x = r[i]-d<=0 ? r[i]-d+360 : r[i]-d;
-				$(".right-circle .n"+(i+1)).css("transform", "rotate("+x+"deg) translate(125px) rotate(-"+x+"deg)");
+			if(top>=h*4 && top<h*5){
+				var o1 = h/2-150,
+					o2 = h/2+224;
+
+				o = top%h;
+				if(o>=o1 && o<=o2){
+					var r = (o-o1)/(o2-o1)*382;
+					$(".iphone-black .screen").css("background-position", "0 -"+r+"px");
+				}else if(o<o1){
+					$(".iphone-black .screen").css("background-position", "0 0px");
+				}else if(o>o2){
+					$(".iphone-black .screen").css("background-position", "0 -382px");
+				}
 			}
+
+			if(top>=h*6 && top<h*11){
+				var o = top/h,
+					r, t;
+				if(o>7){
+					r = (o.toFixed(2)-7)*382;
+					t = 100-(o-7)/3*100;
+				}else{
+					r = 0;
+					t = 100;
+				}
+
+				if(o>10) r = -1146;
+
+				$(".black-funeral-shit .big").removeClass("h").addClass("h");
+				if(o<8.4){
+					$(".black-funeral-shit .b1").removeClass("h");
+				}else if(o>=8.4 && o<=9.5) {
+					$(".black-funeral-shit .b2").removeClass("h");
+				}else{
+					$(".black-funeral-shit .b3").removeClass("h");
+
+				}
+
+				$(".black-funeral-shit").css("top", t.toFixed(2)+"%");
+				$(".iphone-black .screen").css("background-position", "0 -"+r+"px");
+			}
+
+			if(top>=h*10 && top<h*11){
+				var o = (h*11-top)/h;
+				$(".iphone-black").css("transform", "translateY(-"+(1-o.toFixed(2))*150+"%)");
+				$(".loaders").css("top", o.toFixed(2)*100+"%");
+			}
+
+			if(top>=h*12 && top<h*14){
+				var o = (h*13-top)/h;
+				$(".loaders").css("top", -(1-o.toFixed(2))*100+"%");
+				$(".footer").css("top", o.toFixed(2)*100+"%");
+			}
+
+			if(top>=h*13) $(".footer").css("top", 0);
+
+			if(top>=h*4 && top<h*7){
+				var o = (h*6-top)/(h/100);
+				if(o<170) $(".sloganp").css("opacity", 1-(o-150)/20);
+				if(o<0) $(".sloganp").css("opacity", (o+65)/65);
+				$(".pink-board").css("bottom", -o.toFixed(2)+"%");
+			}
+
+			if(top>=h*6 && top<h*7){
+				var o = (h*7-top)/(h/20);
+				$(".iphone-black").css("right", 50-o.toFixed(2)+"%");
+			}
+
+			if(top>=h*2 && top<h*4){
+				var o = Math.ceil((h*5-top)/h*180),
+					d = 180-o,
+					a = [0, 45, 90, 135, 180, 225, 270, 315],
+					r = [315, 270, 225, 180, 135, 90, 45, 0];
+
+				for (var i = 0; i < a.length; i++) {
+					if(Math.abs(d) > a[i]-8 && Math.abs(d) < a[i]+8 && !$(".action-circle").hasClass("bounceIn")) {
+						if(global.lastIcon!==a[i]){
+							global.lastIcon = a[i];
+							$(".action-circle").addClass("bounceIn").css({ backgroundColor: '#ff3b57' });
+							$(".question").animate({opacity: 0.0001}, 100);
+							$(".action-circle").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+								$(".action-circle").removeClass("bounceIn").css({ backgroundColor: '#fff' });
+								$(".question").animate({opacity: 1}, 100);
+							});
+						}
+					}
+
+					var x = a[i]+d>=360 ? a[i]+d-360 : a[i]+d;
+						x = x<0 ? x+360 : x;
+					$(".left-circle .n"+(i+1)).css("transform", "rotate("+x+"deg) translate(125px) rotate(-"+x+"deg)");
+				}
+
+				for (var i = 0; i < r.length; i++) {
+					var x = r[i]-d<=0 ? r[i]-d+360 : r[i]-d;
+					$(".right-circle .n"+(i+1)).css("transform", "rotate("+x+"deg) translate(125px) rotate(-"+x+"deg)");
+				}
+			}
+
 		}
-
-		// dev
-
-		$("#score").html(top);
-		$("#score2").html(h);
-		$("#score3").html(u);
 	};
   
 	$(window).on('scroll', scroll, true);
@@ -400,7 +417,7 @@ Zepto(function($){
 	var startInstagram = function(){
 		$(".loader-video .data").addClass("h");
 		$(".loader-video .loader").css("transform", "scale(1)");
-		$(".loader-video .status").html("Разрешите инстаграму общаться с Realfie во всплывающем окне");
+		$(".loader-video .status").html(locale.restrict);
 		OAuth.popup('instagram').done(function(result) {
 			global.inat = result.access_token;
 			global.inimage = result.user.profile_picture;
@@ -427,7 +444,7 @@ Zepto(function($){
 				}
 			}, global.reqspeed);
 
-			$(".loader-video .status").html("Поиск вот-вот начнется");
+			$(".loader-video .status").html(locale.almostThere);
 			startLoAnimation();
 		});
 	};
@@ -435,7 +452,7 @@ Zepto(function($){
 	var startFacebook = function(){
 		$(".loader-video .loader").css("transform", "scale(1)");
 		$(".loader-video .data").addClass("h");
-		$(".loader-video .status").html("Разрешите фейсбуку общаться с Realfie во всплывающем окне");
+		$(".loader-video .status").html(locale.restrict);
 		OAuth.popup('facebook').done(function(result) {
 			global.fbat = result.access_token;
 			result.get('/me')
@@ -465,27 +482,16 @@ Zepto(function($){
 					}
 				}, global.reqspeed);
 
-				$(".loader-video .status").html("Поиск вот-вот начнется");
+				$(".loader-video .status").html(locale.almostThere);
 				startLoAnimation();
 		    })
 		    .fail(function (err) {
 		        cancelFacebook();
 		    });
 		}).fail(function (err) {
-			alert(err);
 		    cancelFacebook();
 		});
 	};
-
-	/*var showonLoad = function(entries){
-		var n = entries.length,
-			e = entries[Math.floor(Math.random()*entries.length)];
-		$(".ongoing").css("background-image", "url("+e.photo+")");
-		$(".ongoing").addClass("fadeOutUp").removeClass("t");
-		$(".ongoing").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-			$(".ongoing").removeClass("fadeOutUp").addClass("t");
-		});
-	};*/
 
 	var render = function(entries){
 		var n = entries.length;
@@ -511,13 +517,13 @@ Zepto(function($){
 					if(ams[ii]!==undefined) tips += '<div class="type t'+ii+'">'+ams[ii]+' '+types[ii][skl(ams[ii])]+'</div>';
 				};
 
-				$(".fb-connect .entries").append($('<div class="entry"><div class="image" style="background-image: url('+e.photo+')"></div><div class="semibold name">'+e.name+'</div><div class="arial info">Также как и вы любит '+e.edges[Math.floor(Math.random()*e.edges.length)].name+' и еще <span class="pseudo">'+(e.edges.length-1)+' вещ'+types[0][skl(e.edges.length-1)]+'</span><div class="tips">'+tips+'</div></div><div class="arial closer" data-id="'+i+'" data-prov="fb">Сблизиться<div class="icon"></div></div></div>'));
+				$(".fb-connect .entries").append($('<div class="entry"><div class="image" style="background-image: url('+e.photo+')"></div><div class="semibold name">'+e.name+'</div><div class="arial info">'+locale.alsoLike+' '+e.edges[Math.floor(Math.random()*e.edges.length)].name+' '+locale.also+' <span class="pseudo">'+(e.edges.length-1)+' вещ'+types[0][skl(e.edges.length-1)]+'</span><div class="tips">'+tips+'</div></div><div class="arial closer" data-id="'+i+'" data-prov="fb">'+locale.close+'<div class="icon"></div></div></div>'));
 			}
 		};
 	};
 
 	var addIn = function(entries){
-		var type = ["место", "места", "мест"],
+		var type = locale.places,
 			e = entries[0];
 
 		global.closers.push(e);
@@ -528,7 +534,7 @@ Zepto(function($){
 		$(".in-connect .image").append('<div class="soc-icon"></div>');
 		$(".in-connect .entry").addClass("fb");
 
-		$(".in-connect .entries").append($('<div class="entry in"><div class="image" style="background-image: url('+e.photo+')"><div class="soc-icon"></div></div><div class="semibold name">'+e.name+'</div><div class="arial info">Также как и ходит в '+e.edges[Math.floor(Math.random()*e.edges.length)].name+' и еще '+(e.edges.length-1)+' '+type[skl(e.edges.length-1)]+'</div><div class="arial closer" data-id="'+(global.closers.length-1)+'" data-prov="in">Сблизиться<div class="icon"></div></div></div>'));
+		$(".in-connect .entries").append($('<div class="entry in"><div class="image" style="background-image: url('+e.photo+')"><div class="soc-icon"></div></div><div class="semibold name">'+e.name+'</div><div class="arial info">'+locale.alsoPlace+' '+e.edges[Math.floor(Math.random()*e.edges.length)].name+' '+locale.also+' '+(e.edges.length-1)+' '+type[skl(e.edges.length-1)]+'</div><div class="arial closer" data-id="'+(global.closers.length-1)+'" data-prov="in">'+locale.close+'<div class="icon"></div></div></div>'));
 	};
 
 	var fbComplete = function(res){
@@ -536,15 +542,13 @@ Zepto(function($){
 			if(res.status !== "null"){
 				switch(res.status){
 					case 'started':
-						$(".loader-video .status").html("Поиск начался...");
+						$(".loader-video .status").html(locale.started);
 					break;
 					case 'ongoing':
-						//if(res.entries.length>0) showonLoad(res.entries);
-						$(".loader-video .status").html("Поиск завершен на "+(res.progress*100)+"%");
+						$(".loader-video .status").html(locale.progress+" "+(Math.round(res.progress*100))+"%");
 					break;
 					case 'completed':
 						clearInterval(global.fbloop);
-						//disable_scroll();
 						stopLoAnimation();
 
 						if(res.entries.length>0){ 
@@ -552,7 +556,7 @@ Zepto(function($){
 							setTimeout(function(){
 								$(".fb-connect").css("left", 0);
 							},100);
-						}else{ $(".error span").html("потому что вы, видимо, слишком уникальны. Может в следующий раз повезет!"); $(".error").addClass("zoomIn"); };
+						}else{ $(".error span").html(locale.uniq); $(".error").addClass("zoomIn"); };
 					break;
 					case 'failed':
 						stopLoAnimation();
@@ -569,15 +573,13 @@ Zepto(function($){
 			if(res.status !== "null"){
 				switch(res.status){
 					case 'started':
-						$(".loader-video .status").html("Поиск начался...");
+						$(".loader-video .status").html(locale.started);
 					break;
 					case 'ongoing':
-						if(res.entries.length>0) showonLoad(res.entries);
-						$(".loader-video .status").html("Поиск завершен на "+(res.progress*100)+"%");
+						$(".loader-video .status").html(locale.progress+" "+(res.progress*100)+"%");
 					break;
 					case 'completed':
 						clearInterval(global.inloop);
-						//disable_scroll();
 						stopLoAnimation();
 
 						if(res.entries.length>0){ 
@@ -620,7 +622,7 @@ Zepto(function($){
 	var startLoAnimation = function(){
 		$(".loader-video .action").css("background-image", "none");
 		$(".loader-video .action").css("background-image", "url(/static/images/loader-dbl-6.png)");
-		var ianim = 1;
+		global.ianim = 1;
 		global.anim = setInterval(function(){
 			
 			$(".loader-video .loader .left, .loader-video .loader .right").css("background-position", "50% center");
@@ -628,23 +630,23 @@ Zepto(function($){
 			
 			setTimeout(function(){
 				$(".loader-video .loader .left, .loader-video .loader .right").css("opacity", 0);
-				$(".loader-video .action").css("background-image", "url(/static/images/loader-dbl-"+ianim+".png)");
+				$(".loader-video .action").css("background-image", "url(/static/images/loader-dbl-"+global.ianim+".png)");
 				$(".loader-video .action").addClass("bounceIn");
 				$(".loader-video .action").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
 					$(".loader-video .action").removeClass("bounceIn");
 					$(".loader-video .loader .left, .loader-video .loader .right").css("opacity", 1);
 				});
-				ianim++;
-				ianim = ianim===7 ? 1 : ianim;
+				global.ianim++;
+				global.ianim = global.ianim===7 ? 1 : global.ianim;
 			},2000);
 
 			setTimeout(function(){
-				$(".loader-video .loader .left").css("background-position", "-10% center");
-				$(".loader-video .loader .right").css("background-position", "110% center");
+				$(".loader-video .loader .left").css("background-position", "-30% center");
+				$(".loader-video .loader .right").css("background-position", "130% center");
 			},3000);
 
 			setTimeout(function(){
-				$(".loader-video .loader .left, .loader-video .loader .right").removeClass("l1 l2 l3 l4 l5 l6").addClass("l"+ianim);
+				$(".loader-video .loader .left, .loader-video .loader .right").removeClass("l1 l2 l3 l4 l5 l6").addClass("l"+global.ianim);
 			},4000);
 
 		}, 5000);
@@ -666,13 +668,11 @@ Zepto(function($){
 	$(".ok").click(function(){
 		$(".error").removeClass("zoomIn");
 		cancelFacebook();
-		//enable_scroll();
 	});
 
 	$(".first").click(function(){
 		$(".connect").css("left", "100%");
 		cancelFacebook();
-		//enable_scroll();
 	});
 
 	$(".second").click(function(){
@@ -697,7 +697,9 @@ Zepto(function($){
 	} 
 
 	var sendEmail = function(email) {
-		//$.ajax(email);
+		$.getJSON('/invite/?email=' + email, function(res){
+
+		});
 	}
 
 	$("#main-video").on("keypress", "#top-input", function(){
@@ -706,6 +708,17 @@ Zepto(function($){
 
 	$(".footer").on("keypress", "#foot-input", function(){
 		$("#foot-input").removeClass("error");
+	});
+	
+	$("body").on("focus", "input", function(){
+		global.locked = true;
+	});
+
+	$("body").on("blur", "input", function(){
+		setTimeout(function(){
+			$(window).scrollTop(global.lasttop);
+			global.locked = false;
+		}, 200);
 	});
 
 	$(".topbtn").click(function(){
@@ -761,8 +774,8 @@ Zepto(function($){
 		$(".closer-page .you").css("background-image", "url("+pic+")");
 		$(".closer-page .himher").css("background-image", "url("+himher.photo+")");
 		$(".closer-page .h1 .y").html(global.fbgender==="male" ? "" : "а");
-		$(".closer-page .h1 .hh").html(himher.sex==="m" ? "тот самый" : "та самая");
-		$(".closer-page .h3 span").html(himher.sex==="m" ? "парень" : "девушка");
+		$(".closer-page .h1 .hh").html(himher.sex==="m" ? locale.him : locale.her);
+		$(".closer-page .h3 span").html(himher.sex==="m" ? locale.boy : locale.girl);
 
 		$(".closer-page").css("left", 0);
 	});

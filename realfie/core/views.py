@@ -9,7 +9,7 @@ from social.apps.django_app.default.models import UserSocialAuth
 from open_facebook import OpenFacebook
 
 from realfie.core.forms import FbidForm
-from realfie.core.models import FbUser, RlfUser, FetchTask
+from realfie.core.models import FbUser, RlfUser, FetchTask, InviteEmail
 from realfie.core.tasks import fetch_fb
 
 
@@ -25,7 +25,27 @@ class EraseResultsView(View):
 
         return HttpResponseRedirect('/')
 
+
+class SaveEmailView(View):
+    def get(self, request, *args, **kwargs):
+        email = request.GET.get('email')
+        
+        if email:
+            entry = InviteEmail.objects.filter(email=email).first()
+            
+            if not entry:
+                InviteEmail(email=email).save()
+
+        return JsonResponse({})
+
 class FetchView(View):
+    PAGE_TYPES = {
+        'TV Show': 3,
+        'Movie': 3,
+        'Book': 4,
+        'Author': 4,
+    }
+
     def get(self, request, *args, **kwargs):
         source = request.GET.get('source')
         token = request.GET.get('access_token')
@@ -42,16 +62,24 @@ class FetchView(View):
                 if not fbuser:
                     fbuser = FbUser(fbid=fbid)
 
-                fbuser.name = response['name']
-                fbuser.birthday = datetime.strptime(response['birthday'], '%m/%d/%Y')
-                fbuser.gender = response['gender']
-                fbuser.link = response['link']
-                fbuser.location_id = response['location']['id']
-                fbuser.location_name = response['location']['name']
-                fbuser.locale = response['locale']
+                fbuser.name = response.get('name')
+                try:
+                    fbuser.birthday = datetime.strptime(response['birthday'], '%m/%d/%Y')
+                except KeyError:
+                    pass
+                
+                try:
+                    fbuser.location_id = response['location']['id']
+                    fbuser.location_name = response['location']['name']
+                except KeyError:
+                    pass
 
-                reponse = fb.get('me/picture', type='square', redirect='false')
-                fbuser.photo = reponse['data']['url']
+                fbuser.gender = response.get('gender')
+                fbuser.link = response.get('link')
+                fbuser.locale = response.get('locale')
+
+                response = fb.get('me/picture', type='square', redirect='false')
+                fbuser.photo = response['data']['url']
 
                 fbuser.save()
 
@@ -74,21 +102,25 @@ class FetchView(View):
 
                         pages.append({
                             'name': p.name,
-                            'type': p.type
+                            'type': self.PAGE_TYPES.get(p.type) or 5
                         })
 
                     entries.append({
+                        'id': u.fbid,
                         'name': u.name,
                         'photo': u.photo,
                         'sex': u.gender,
                         'edges': pages
                     })
 
+                entries.sort(key=lambda e: len(e['edges']))
+                entries.reverse()
+
             return JsonResponse({
                 'task_id': task.pk,
                 'status': task.status,
                 'progress': task.progress,
-                'entries': entries
+                'entries': entries[:3]
             })
         
         elif source == 'instagram':

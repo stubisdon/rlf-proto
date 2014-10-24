@@ -163,7 +163,7 @@ input {
 .logo {
 	width: 100%;
 	height: 64px;
-	background-size: 260px 64px;
+	background-size: auto 100%;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-image: url("images/logo.png");
@@ -193,9 +193,8 @@ input {
 
 .background-video video {
 	min-width: 100%;
-	min-height: 100%;
 	width: auto;
-	height: auto;
+	height: 100%;
 }
 
 #second {
@@ -791,12 +790,12 @@ input {
 
 .loader-video .loader .left {
 	height: 100px;
-	background-position: -10% center;
+	background-position: -30% center;
 }
 
 .loader-video .loader .right {
 	height: 100px;
-	background-position: 110% center;
+	background-position: 130% center;
 }
 
 .loader-video .loader .status {
@@ -885,7 +884,7 @@ input {
 	bottom: 20px;
 	left: 50%;
 	width: 100px;
-	margin-left: -65px;
+	margin-left: -59px;
 	text-align: center;
 }
 
@@ -1576,38 +1575,252 @@ input {
 	background-color: #2b2b2b;
 }
 
-.score {
+.landscape {
+	opacity: 0;
+	top: 50%;
+	left: 50%;
 	position: fixed;
-	z-index: 999;
-	right: 10px;
-	height: 20px;
-	background-color: white;
+	width: 250px;
+	height: 150px;
+	margin-top: -55px;
+	margin-left: -125px;
+	background-image: url("images/rotate.png");
+	background-size: 100px;
+	background-repeat: no-repeat;
+	background-position: center;
 	text-align: center;
-	padding: 5px 7px;
+	font-size: 20px;
+	-webkit-transition: opacity .2s ease-out;
+    -moz-transition: opacity .2s ease-out;
+    -o-transition: opacity .2s ease-out;
+    transition: opacity .2s ease-out;
+	pointer-events: none;
 }
 
-#score {
-	top: 10px;
+@media (max-width: 800px) {
+	video {
+		display: none;
+	}
+	#main-video .data {
+		top: 0%;
+		margin-top: 25px;
+		height: auto;
+	}
+	.slogan {
+		font-size: 25px;
+		line-height: 30px;
+	}
+	.subscribe > * {
+		float: none;
+		width: 100%;
+	}
+	.subscribe {
+		text-align: center;
+		width: 80%;
+		left: 10%;
+	}
+	.subscribe .title {
+		text-align: inherit;
+		padding-right: none;
+		white-space: normal;
+		padding-right: 0;
+		font-size: 14px;
+	}
+	.top-input {
+		position: relative;
+		font-size: 12px;
+	}
+	.top-input input {
+		padding: 12px;
+		width: calc(100% - 38px);
+	}
+	.top-input .button {		
+		height: 38px;
+		width: 38px;
+	}
+	.top-input .button:hover, .anim {
+		width: 38px!important;
+	}
+	.top-input .button svg {
+		margin-left: 1px;
+	}
+	.connect .add {
+		margin-left: 0px;
+	}
+	.stripes > * {
+		background-image: none!important;
+		width: 100%;
+		height: 25%;
+		margin-top: 0!important;
+	}
+	.stripes > * .semibold {
+		font-size: 8vh;
+		letter-spacing: 1px;
+		line-height: 6vh;
+		bottom: 6vh;
+		right: 15px;
+	}
+	.stripes > * .bold {
+		top: 20px;
+		left: 0;
+	}
+	.stripes.fixed{
+		position: absolute;
+		top: 100%;
+	}
+	.logo {
+		height: 40px;
+		margin-bottom: 20px;
+	}
+	.subscribe .thankyou {
+		width: 100%;
+		margin-top: -45px;
+		left: 0;
+		margin-left: 0;
+	}
+	.action-circle, .question, .right-circle {
+		opacity: 0!important;
+	}
+	.left-circle.circle {
+		margin-left: -25px;
+		left: 50%;
+	}
+	.iphone-black {
+		right: 0%!important;
+		margin-top: -263px;
+	}
+	.footer .bot .tell-friends {
+		margin-top: 15px;
+	}
+	.footer .bot .logo {
+		margin: 15px auto 5px auto;
+	}
+	.footer .bot .copyright {
+		font-size: 11px;
+	}
+	.footer .mid .h1 {
+		margin: 15px 0 30px 0;
+	}
+	.foot-input {
+		width: 300px;
+		margin-left: -150px;
+	}
+	.foot-input input {
+		width: 242px;
+	}
+	.dataH .video {
+		height: 50%;
+		top: 15%;
+	}
+	.surf, .surf-shadow, .books {
+		opacity: 0!important;
+	}
+	.sloganp {
+		top: 20%;
+	}
+	.loader-video .loader .status {
+		width: 200px;
+		margin-left: -100px;
+		font-size: 16px;
+	}
+	.connect .h1 {
+		margin-top: 5vh;
+		width: 80%;
+		margin-left: 10%;
+		font-size: 3.6vh;
+	}
+	.connect .h3 {	
+		width: 70%;
+		margin-left: 15%;
+	}
+	.connect .entries.n1 {
+		margin-left: 37.5%;
+	}
+	.connect .entries.n2 {
+		margin-left: 25%;
+	}
+	.connect .entries.n3 {
+		margin-left: 12.5%;
+	}
+	.connect .entries.n4 {
+		margin-left: 0%;
+	}
+	.connect .entries {
+		width: 100%;
+		padding: 2vh 0;
+	}
+	.connect .entries .entry {
+		padding: 10px;
+	}
+	.connect .entries .entry .image {
+		width: 60px;
+		height: 60px;
+	}
+	.connect .entries .entry .name {
+		font-size: 2vh;
+	}
+	.connect .entries .entry .info {
+		font-size: 1.8vh;
+	}
+	.connect .entries .entry .closer {
+		font-size: 8px;
+		width: 100%;
+	}
+	.connect .entries .entry .closer .icon {
+		display: none;
+	}
+	.connect .add {
+		bottom: 45px;
+		left: 0;
+		width: 100%;
+	}
+	.connect .add .dude {
+		display: none;
+	}
+	.connect .add .info {
+		width: 70%;
+		margin-left: 15%;
+		font-size: 10px;
+		text-align: center;
+	}
+	.connect .add .instagram {
+		width: 100px;
+		height: 34px;
+		font-size: 10px;
+		margin-left: calc(50% - 50px);
+		margin-top: 5px;
+		background-image: none;
+		padding: 0;
+	}
+	.closer-page .main {
+		width: 100%;
+		margin: 40px auto;
+		padding-left: calc(50% - 150px);
+	}
+	.closer-page .connection {
+		width: 100px;
+		height: 200px;
+	}
+	.closer-page .you, .closer-page .himher {
+		width: 100px;
+		height: 100px;
+	}
+	.closer-page .connection .start {
+		padding: 12px 0;
+	}
+	.closer-page .connection .tip {
+		height: 70px;
+		padding-top: 0px;
+	}
 }
 
-#score2 {
-	top: 35px;
-}
-
-#score3 {
-	top: 60px;
-}
-
-#score4 {
-	top: 85px;
-}
-
-@media (max-width: 980px) {
-
-}
-
-@media (max-width: 640px) {
-
+@media all and (max-height: 320px) and (orientation:landscape) {
+	body > *:not(.landscape) {
+		opacity: 0!important;
+	}
+	.landscape {
+		opacity: 1;
+	}
 }
 
 

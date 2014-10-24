@@ -26,3 +26,5 @@ LOG_FILE = '{0}.log'.format(BOT_NAME)
 ITEM_PIPELINES = {
     'rlfspider.pipelines.RlfspiderPipeline': 100,
 }
+
+DOWNLOAD_DELAY = 0.33

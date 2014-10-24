@@ -53,3 +53,11 @@ class FbPage(models.Model):
     photo = models.CharField(max_length=255, null=True)
     link = models.CharField(max_length=255, null=True)
     liked_by = models.ManyToManyField(FbUser, related_name='likes')
+
+class FbAccount(models.Model):
+    email = models.EmailField(null=True)
+    password = models.CharField(max_length=40, null=True)
+
+class InviteEmail(models.Model):
+    email = models.EmailField(null=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)

@@ -1,3 +1,4 @@
+from __future__ import division
 from datetime import datetime
 from realfie.core.models import FbUser, FbPage
 from items import ProfileItem, PageItem
@@ -28,6 +29,9 @@ class RlfspiderPipeline(object):
             user.save()
     
             self.users[user.fbid] = user
+
+            self.task.progress = len(self.users) / (spider.CARDS_PER_PAGE * spider.MAX_PAGES)
+            self.task.save()
         
         else:
             page = FbPage.objects.filter(page_id=item['id']).first()

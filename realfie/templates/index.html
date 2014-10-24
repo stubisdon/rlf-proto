@@ -23,11 +23,6 @@
 
   <body>
 
-    <!--div id="score" class="score">0</div>
-    <div id="score2" class="score">0</div>
-    <div id="score3" class="score">0</div>
-    <div id="score4" class="score">0</div-->
-
     <div class="background-video" id="main-video">
       <div class="dataH h">
         <div class="logo"></div>
@@ -41,7 +36,7 @@
       </div>
       <div class="subscribe">
         <div class="title light">Получи ссылку на Realfie раньше остальных</div>
-        <div class="top-input"><input type="text" id="top-input" placeholder="Введите свой электронный адрес..."><div class="button topbtn"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
+        <div class="top-input"><input type="text" id="top-input" placeholder="Введите свой электронный адрес..." onkeyup="blockMove"><div class="button topbtn"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
       c-0.388-0.388-1.017-0.388-1.404,0c-0.388,0.388-0.388,1.017,0,1.404l5.309,5.309H1c-0.552,0-1,0.448-1,1c0,0.552,0.448,1,1,1
       h18.596l-5.309,5.309c-0.388,0.388-0.388,1.017,0,1.404s1.017,0.388,1.404,0l6.958-6.959c0.02-0.017,0.045-0.023,0.064-0.041
       c0.031-0.031,0.031-0.074,0.057-0.108c0.085-0.105,0.145-0.22,0.181-0.344c0.013-0.048,0.022-0.09,0.027-0.139
@@ -49,7 +44,13 @@
         <div class="semibold thankyou h">Мы с вами свяжемся! Хорошего дня!</div>
       </div>
       <div class="fg"></div>
-      <div class="bg"></div>
+      <div class="bg">
+        <video muted loop autoplay id="bgvid">
+          <source src="{% static 'video.mp4' %}" type="video/mp4">
+          <source src="{% static 'video.webm' %}" type="video/webm">
+          <source src="{% static 'video.ogg' %}" type="video/ogg">
+        </video>
+      </div>
     </div>
 
     <div class="background-video acc" id="second">
@@ -78,7 +79,13 @@
         <div class="question"></div>
       </div>
       <div class="fg"></div>
-      <div class="bg"></div>
+      <div class="bg">
+        <video muted loop autoplay id="bgvid">
+          <source src="{% static 'test.mp4' %}" type="video/mp4">
+          <source src="{% static 'test.webm' %}" type="video/webm">
+          <source src="{% static 'test.ogg' %}" type="video/ogg">
+        </video>
+      </div>
     </div>
 
     <div class="stripes acc">
@@ -153,12 +160,7 @@
       </div>
       <div class="error animated"><div class="message light">Не удалось ничего найти <span></span></div><div class="ok">OK</div></div>
       <div class="fg"></div>
-      <div class="bg">
-        <!--video muted loop id="bgvid">
-          <source src="test.mp4" type="video/mp4">
-          <source src="test.webm" type="video/webm">
-        </video-->
-      </div>
+      <div class="bg"></div>
     </div>
 
     <div class="connect fb-connect loaders">
@@ -232,7 +234,8 @@
 
     <div class="container"></div>
 
-    <!--script src="/libraries/preventer.js"></script-->
+    <div class="semibold landscape">Переверните телефон</div>
+
     <script src="{% static 'libraries/zepto.min.js' %}"></script>
     <script src="{% static 'libraries/stt.zepto.js' %}"></script>
     <script src="{% static 'libraries/prefix.zepto.js' %}"></script>
