@@ -9,7 +9,6 @@ from django.http import HttpResponseRedirect, JsonResponse
 from social.apps.django_app.default.models import UserSocialAuth
 from open_facebook import OpenFacebook
 
-from realfie.core.forms import FbidForm
 from realfie.core.models import FbUser, FetchTask, InviteEmail
 from realfie.core.tasks import fetch_fb, fetch_ig
 
