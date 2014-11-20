@@ -2,6 +2,9 @@ from django.db import models
 from social.apps.django_app.default.models import UserSocialAuth
 
 class FbUser(models.Model):
+    def __unicode__(self):
+        return self.name
+
     SEX_CHOICES = (
         ('male', 'Male'),
         ('female', 'Female'),
@@ -16,15 +19,22 @@ class FbUser(models.Model):
     location_id = models.BigIntegerField(null=True)
     location_name = models.CharField(max_length=80, null=True)
     locale = models.CharField(max_length=10, null=True)
-    #social = models.ForeignKey(UserSocialAuth, null=True)
-    # this is broken and temporary, need content type @ FetchTask
     task = models.ForeignKey('FetchTask', null=True, related_name='fbusers')
 
 
-class RlfUser(models.Model):
-    fbid = models.BigIntegerField(null=True)
+class IgUser(models.Model):
+    def __unicode__(self):
+        return self.name
+
+    igid = models.BigIntegerField(null=True)
+    name = models.CharField(max_length=80, null=True)
+    photo = models.CharField(max_length=255, null=True)
+    task = models.ForeignKey('FetchTask', null=True, related_name='igusers')
 
 class FetchTask(models.Model):
+    def __unicode__(self):
+        return unicode(self.uid)
+
     STATUS_CHOICES = (
         ('started', 'Started'),
         ('ongoing', 'In progress'),
@@ -47,6 +57,9 @@ class FetchTask(models.Model):
 
 
 class FbPage(models.Model):
+    def __unicode__(self):
+        return self.name
+
     page_id = models.BigIntegerField(null=True)
     name = models.CharField(max_length=80, null=True)
     type = models.CharField(max_length=80, null=True)
@@ -55,9 +68,15 @@ class FbPage(models.Model):
     liked_by = models.ManyToManyField(FbUser, related_name='likes')
 
 class FbAccount(models.Model):
+    def __unicode__(self):
+        return self.email
+
     email = models.EmailField(null=True)
     password = models.CharField(max_length=40, null=True)
 
 class InviteEmail(models.Model):
+    def __unicode__(self):
+        return self.email
+
     email = models.EmailField(null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)

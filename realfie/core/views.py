@@ -1,3 +1,4 @@
+import urllib2, json
 from datetime import datetime
 from django.shortcuts import render
 from django.views.generic import TemplateView
@@ -9,22 +10,8 @@ from social.apps.django_app.default.models import UserSocialAuth
 from open_facebook import OpenFacebook
 
 from realfie.core.forms import FbidForm
-from realfie.core.models import FbUser, RlfUser, FetchTask, InviteEmail
-from realfie.core.tasks import fetch_fb
-
-
-class IndexView(TemplateView):
-    template_name = "index.html"
-
-    def get_context_data(self, **kwargs):
-        return super(IndexView, self).get_context_data(**kwargs)
-
-class EraseResultsView(View):
-    def get(self, request, *args, **kwargs):
-        FbTask.objects.get(pk=kwargs['task']).delete()
-
-        return HttpResponseRedirect('/')
-
+from realfie.core.models import FbUser, FetchTask, InviteEmail
+from realfie.core.tasks import fetch_fb, fetch_ig
 
 class SaveEmailView(View):
     def get(self, request, *args, **kwargs):
@@ -44,6 +31,7 @@ class FetchView(View):
         'Movie': 3,
         'Book': 4,
         'Author': 4,
+        'Place': 1,
     }
 
     def get(self, request, *args, **kwargs):
@@ -51,7 +39,11 @@ class FetchView(View):
         token = request.GET.get('access_token')
         task_id = request.GET.get('task_id')
 
-        if task_id or source == 'facebook':
+        if task_id:
+            task = FetchTask.objects.filter(pk=task_id).first()
+            source = task.source
+
+        if source == 'facebook':
             if token:
                 fb = OpenFacebook(token)
                 response = fb.get('me')
@@ -83,23 +75,25 @@ class FetchView(View):
 
                 fbuser.save()
 
-                task = FetchTask(source='facebook', uid=fbid)
-                task.save()
-                fetch_fb.delay(task)
-
-            else:
-                task = FetchTask.objects.filter(pk=task_id).first()
+                # FIXME
+                #task = FetchTask.objects.filter(source='facebook', uid=fbid).order_by('-finished').first()
+                task = None
+                if not task or not task.fbusers.count() > 1:
+                    task = FetchTask(source='facebook', uid=fbid)
+                    task.save()
+                    fetch_fb.delay(task)
 
             entries = []
             if task.status == 'completed':
+                fbuser = FbUser.objects.get(fbid=task.uid)
+
                 for u in task.fbusers.all():
                     if not u.likes.count():
                         continue
 
                     pages = []
                     
-                    for p in u.likes.all():
-
+                    for p in u.likes.all() & fbuser.likes.all():
                         pages.append({
                             'name': p.name,
                             'type': self.PAGE_TYPES.get(p.type) or 5
@@ -124,8 +118,37 @@ class FetchView(View):
             })
         
         elif source == 'instagram':
-            pass
+            resp = []
+            # FIXME
+            #task = FetchTask.objects.filter(pk=251).first()
 
+            #if False and token:
+            if token:
+                task = FetchTask(source='instagram')
+                task.save()
+                fetch_ig.delay(task, token)
+            elif task.status == 'completed':
+                iguser = task.igusers.first()
+
+                p = {
+                    'name': '',
+                    'type': 5,
+                }
+                
+                resp = [{
+                    'id': iguser.igid,
+                    'name': iguser.name,
+                    'photo': iguser.photo,
+                    'sex': 'f',
+                    'edges': [p],
+                }]
+
+            return JsonResponse({
+                'task_id': task.id,
+                'status': task.status,
+                'progress': 0,
+                'entries': resp,
+            })
 
         return JsonResponse({
             'message': 'Something went wrong.',

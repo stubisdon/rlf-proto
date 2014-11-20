@@ -27,10 +27,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'realfie.django_geoip_redirection',
     'djcelery',
     'test_pep8',
     'easy_thumbnails',
-    'django_facebook',
+    #'django_facebook',
     'social.apps.django_app.default',
 
     'realfie.core',
@@ -44,6 +45,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'realfie.django_geoip_redirection.middleware.LocationMiddleWare',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -115,6 +117,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__) + os.sep + '..')
+
 STATIC_URL = '/static/'
 
 STATIC_ROOT = root('media/static')
@@ -152,6 +156,13 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'dj_cache',
     }
 }
 

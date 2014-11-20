@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re, codecs, json, urllib
+from time import sleep
 from scrapy import Selector, Spider, log
 from scrapy.http import Request, FormRequest
 from rlfspider.items import ProfileItem, PageItem
@@ -16,6 +17,10 @@ REGEXES = {
 class FbSpider(Spider):
     MAX_PAGES = 3
     CARDS_PER_PAGE = 12
+    MAX_ATTEMPTS = 3
+    ATTEMPT_DELAY = 2
+
+    attempts = 0
 
     name = "fb"
     allowed_domains = ["facebook.com"]
@@ -42,10 +47,13 @@ class FbSpider(Spider):
         return [FormRequest.from_response(response, formname='login_form', formdata=data, callback=self.after_login)]
 
     def after_login(self, response):
-        if "Timeline" not in response.body:
+        if "Send a New Message" not in response.body:
                 self.log("Authentication failed!", level=log.ERROR)
                 return
 
+        return self.start_parse()
+
+    def start_parse(self):
         fbid = self.fbuser.fbid
         gender = 'females' if self.fbuser.gender == 'male' else 'males'
         #url = 'https://www.facebook.com/search/{0}/residents-near/intersect/{0}/pages-liked/likers/{0}/friends/friends/{1}/intersect'.format(fbid, gender)
@@ -82,6 +90,16 @@ class FbSpider(Spider):
 
                 if not data:
                     self.log("Got no data for the next page!", level=log.ERROR)
+
+                    if self.attempts < self.MAX_ATTEMPTS:
+                        self.attempts += 1
+                        self.log("Retrying...", level=log.INFO)
+                        sleep(self.ATTEMPT_DELAY)
+                        yield self.start_parse()
+                        return
+                    else:
+                        self.log("Failed.", level=log.INFO)
+
                     #self.task_entry.status = 'failed'
                     #self.task_entry.save()
                     return
@@ -113,8 +131,10 @@ class FbSpider(Spider):
         else:
             filename = '{0}_likes.html'.format(liked_by)            
 
+        """
         with codecs.open(filename, 'wb', 'utf-8') as f:
             f.write(payload)
+        """
 
         s = Selector(text=payload)
 
@@ -126,8 +146,18 @@ class FbSpider(Spider):
         profile_elems = s.xpath("//div[starts-with(@class, '{0}')]".format(card_class))
 
         if not liked_by:
+            gender = 'female' if self.fbuser.gender == 'male' else 'male'
             # extract basic info
             for e in profile_elems:
+                try:
+                    snippets = e.xpath(".//div[@data-bt='{\"ct\":\"snippets\"}']")[0].extract()
+                    if "Married" in snippets or \
+                       "Engaged" in snippets or \
+                       "In a relationship" in snippets:
+                        continue
+                except IndexError:
+                    pass
+
                 lid = json.loads(e.xpath(".//div[starts-with(@data-bt, '{\"id\"')]/@data-bt")[0].extract())['id']
                 link = e.xpath(".//div[@data-bt='{\"ct\":\"title\"}']/a/@href")[0].extract()
                 link = REGEXES['url_noparams'].sub('', link)
@@ -136,7 +166,8 @@ class FbSpider(Spider):
                     id=lid,
                     name=e.xpath(".//div[@data-bt='{\"ct\":\"title\"}']/a/text()")[0].extract(),
                     photo=e.xpath(".//a[@data-bt='{\"ct\":\"image\"}']/img/@src")[0].extract(),
-                    link=link
+                    link=link,
+                    gender=gender,
                 )
 
                 # fetch pages-liked
@@ -154,7 +185,7 @@ class FbSpider(Spider):
                 try:
                     t = e.xpath(".//div[@data-bt='{\"ct\":\"sub_headers\"}']/text()")[0].extract()
                 except IndexError:
-                    t = None
+                    t = 'Place'
 
                 yield PageItem(
                     id=lid,

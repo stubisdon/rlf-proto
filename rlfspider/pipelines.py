@@ -24,6 +24,7 @@ class RlfspiderPipeline(object):
             user.name = item['name']
             user.photo = item['photo']
             user.link = item['link']
+            user.gender = item['gender']
             user.task = self.task
     
             user.save()

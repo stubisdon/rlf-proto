@@ -27,4 +27,4 @@ ITEM_PIPELINES = {
     'rlfspider.pipelines.RlfspiderPipeline': 100,
 }
 
-DOWNLOAD_DELAY = 0.33
+DOWNLOAD_DELAY = 0.5

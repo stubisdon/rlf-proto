@@ -13,6 +13,7 @@ class ProfileItem(scrapy.Item):
     name = scrapy.Field()
     photo = scrapy.Field()
     link = scrapy.Field()
+    gender = scrapy.Field()
 
 class PageItem(scrapy.Item):
     id = scrapy.Field()

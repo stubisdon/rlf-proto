@@ -1,15 +1,23 @@
-from django.contrib.admin import ModelAdmin, site
-from realfie.core.models import FbUser, FbPage, RlfUser, FetchTask, FbAccount, InviteEmail
+from django.contrib.admin import ModelAdmin, TabularInline, site
+from realfie.core.models import FbUser, IgUser, FbPage, FetchTask, FbAccount, InviteEmail
 
+
+class FbUserInline(TabularInline):
+    model = FbUser
 
 class FbUserAdmin(ModelAdmin):
-    pass
+    list_display = ['name', 'get_likes']
+        
+    def get_likes(self, obj):
+        return ", ".join([p.name for p in obj.likes.all()])
 
-class RlfUserAdmin(ModelAdmin):
+class IgUserAdmin(ModelAdmin):
     pass
 
 class FetchTaskAdmin(ModelAdmin):
-    pass
+    inlines = [
+        FbUserInline,
+    ]
 
 class FbPageAdmin(ModelAdmin):
     pass
@@ -21,8 +29,8 @@ class InviteEmailAdmin(ModelAdmin):
     pass
 
 site.register(FbUser, FbUserAdmin)
+site.register(IgUser, IgUserAdmin)
 site.register(FetchTask, FetchTaskAdmin)
 site.register(FbPage, FbPageAdmin)
-site.register(RlfUser, RlfUserAdmin)
 site.register(FbAccount, FbAccountAdmin)
 site.register(InviteEmail, InviteEmailAdmin)
