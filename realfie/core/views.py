@@ -40,6 +40,7 @@ class FetchView(View):
         source = request.GET.get('source')
         token = request.GET.get('access_token')
         task_id = request.GET.get('task_id')
+        task = None
 
         if task_id:
             task = FetchTask.objects.filter(pk=task_id).first()
@@ -78,8 +79,7 @@ class FetchView(View):
                 fbuser.save()
 
                 # FIXME
-                task = FetchTask.objects.filter(source='facebook', uid=fbid).order_by('-finished').first()
-                #task = None
+                #task = FetchTask.objects.filter(source='facebook', uid=fbid).order_by('-finished').first()
                 if not task or not task.fbusers.count() > 1:
                     task = FetchTask(source='facebook', uid=fbid)
                     task.save()
@@ -122,10 +122,10 @@ class FetchView(View):
         elif source == 'instagram':
             resp = []
             # FIXME
-            task = FetchTask.objects.filter(pk=251).first()
+            #task = FetchTask.objects.filter(pk=251).first()
 
-            if False and token:
-            #if token:
+            #if False and token:
+            if token:
                 task = FetchTask(source='instagram')
                 task.save()
                 fetch_ig.delay(task, token)
