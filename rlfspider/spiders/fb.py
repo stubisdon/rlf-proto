@@ -135,12 +135,15 @@ class FbSpider(Spider):
         with codecs.open(filename, 'wb', 'utf-8') as f:
             f.write(payload)
         """
-
+        
         s = Selector(text=payload)
 
         # get profile card container CSS class name
         if not card_class:
-            card_class = s.xpath("//div[@id='BrowseResultsContainer']/div/@class")[0].extract()
+            try:
+                card_class = s.xpath("//div[@id='BrowseResultsContainer']/div/@class")[0].extract()
+            except IndexError:
+                card_class = s.xpath("//body/div/div/@class")[0].extract()
 
         # profile cards are selected by this class
         profile_elems = s.xpath("//div[starts-with(@class, '{0}')]".format(card_class))
