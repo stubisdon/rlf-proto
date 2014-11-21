@@ -12,7 +12,6 @@ from open_facebook import OpenFacebook
 
 from PIL import Image, ImageOps
 
-from realfie.core.forms import FbidForm
 from realfie.core.models import FbUser, IgUser, FetchTask, InviteEmail
 from realfie.core.tasks import fetch_fb, fetch_ig
 
