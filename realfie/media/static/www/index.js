@@ -1,4 +1,4 @@
-var global = { reqspeed: 3000, firstH: $(window).height(), locked: false, lasttop: 0, old: 0, oTop: 0, play: false, inputhover: false, lastIcon: null, closers: [], reqi: 0, fbcancel: false, fbloop: null, fbuser: 0, fbgender: null, incancel: false, inloop: null, inuser: 0, inimage: null, inflag: false, anim: null, anim2: null, ianim: 1 };
+var global = { FB: null, loc: 'ru', closer_data: {}, reqspeed: 3000, firstH: $(window).height(), locked: false, lasttop: 0, old: 0, oTop: 0, play: false, inputhover: false, lastIcon: null, closers: [], reqi: 0, fbcancel: false, fbloop: null, fbuser: 0, fbgender: null, incancel: false, inloop: null, inuser: 0, inimage: null, inflag: false, anim: null, anim2: null, ianim: 1 };
 
 var types = [	["ь", "и", "ей"], // не редактировать
 				["место", "места", "мест", "ходите в одно и то же место"], // 1
@@ -8,17 +8,27 @@ var types = [	["ь", "и", "ей"], // не редактировать
 				["лайк", "лайка", "лайков", "лайкаете одно и то же"] //5
 			];
 
+var types_en = [	["", "s", "s"], // не редактировать
+				["place", "places", "places", "visited the same place"], // 1
+				["dish", "dishes", "dishes", "like the same dish"], // 2
+				["movie", "movies", "movies", "watched that movie"], //3
+				["book", "books", "books", "read that book"], //4
+				["like", "likes", "likes", "liked the same page"] //5
+			];
+
 var locale = {
-	restrict: "Разрешите инстаграму общаться с Realfie во всплывающем окне",
+	restrict: "Разрешите сервису общаться с Realfie во всплывающем окне",
 	almostThere: "Подожди немного, пока Realfie изучает твои интересы",
-	started: "Хмм.. Как интересно",
+	started: "Оу...",
 	places: ["место", "места", "мест"],
-	progress: "Realfie в прогрессе",
-	uniq: "потому что вы, видимо, слишком уникальны. Может в следующий раз повезет!",
+	progress: "Оу... Кажется, мы что-то нашли",
+	uniq: "Лайкни в Facebook что-нибудь интересное и возвращайся обратно!",
+	thing: "вещ",
 	alsoLike: "Также как и вы любит",
 	alsoPlace: "Также как и вы ходит в",
 	also: "и еще",
-	close: "Привлеки внимание",
+	also_s: "",
+	close: ["Привлеки внимание", "Познакомся", "Сделай первый шаг", "Начни разговор"],
 	him: "тот самый",
 	her: "та самая",
 	boy: "парень",
@@ -26,21 +36,30 @@ var locale = {
 };
 
 var locale_en = {
-	restrict: "Разрешите инстаграму общаться с Realfie во всплывающем окне",
+	restrict: "Please allow Realfie to connect in the pop-up window",
 	almostThere: "Please wait while Realfie analyzes your interests",
-	started: "Хмм.. Как интересно",
-	places: ["место", "места", "мест"],
+	started: "Ohh, found some.",
+	places: ["place", "places", "places"],
 	progress: "Realfie в прогрессе",
-	uniq: "потому что вы, видимо, слишком уникальны. Может в следующий раз повезет!",
-	alsoLike: "Также как и вы любит",
-	alsoPlace: "Также как и вы ходит в",
-	also: "и еще",
-	close: "Привлеки внимание",
-	him: "тот самый",
-	her: "та самая",
-	boy: "парень",
-	girl: "девушка"
+	uniq: "Could be your privacy settings, or you just haven't liked enough pages on Facebook.",
+	thing: "thing",
+	alsoLike: "Also likes",
+	alsoPlace: "Also visited",
+	also: "and",
+	also_s: "more",
+	close: ["Make your move", "Start talking", "Wink", "Ask about Friday"],
+	him: "he is",
+	her: "she is",
+	boy: "guy",
+	girl: "girl"
 };
+
+if (window.location.href.indexOf('/eng/') > -1)
+{
+	locale = locale_en;
+	types = types_en;
+	global.loc = 'en';
+}
 
 Zepto(function($){
 	$(".scroll-down.r").css("opacity", 1);
@@ -48,6 +67,16 @@ Zepto(function($){
 	setTimeout(function(){
 		$(".subscribe").css("opacity", 1)
 	},60000);
+
+	// Time for some hindu
+	setTimeout(function(){
+		$.each($('.pluso-wrap a'), function(k, v) {
+			var el = $(v);
+			var title = el.attr('title');
+			if (!title) return;
+			el.attr('onclick', '_gaq.push([\'_trackEvent\', \'Share\', \''+title+'\', \'\']);');
+		});
+	},5000);
 
 	OAuth.initialize('l_apl0rGv3ODyhXFCHLj16EdcyY');
 
@@ -197,7 +226,7 @@ Zepto(function($){
 				$(".stripes .gre").css("margin-top", (o/0.25)+"px");
 			}
 
-			if(top>=h && top<h*2){
+			if(top>=h && top<h*2 && $(window).width() > 800){
 				var o = h*2-top < h/4 ? (h*2-top)/(h/4) : 1;
 				$(".stripes .red > *").css("opacity", o.toFixed(2));
 				$(".stripes .yel > *").css("opacity", o.toFixed(2));
@@ -478,6 +507,7 @@ Zepto(function($){
 			$(".loader-video .status").html(locale.almostThere);
 			startLoAnimation();
 
+			global.FB = result;
 			global.fbat = result.access_token;
 			result.get('/me')
 		    .done(function (response) {
@@ -538,7 +568,17 @@ Zepto(function($){
 					if(ams[ii]!==undefined) tips += '<div class="type t'+ii+'">'+ams[ii]+' '+types[ii][skl(ams[ii])]+'</div>';
 				};
 
-				$(".fb-connect .entries").append($('<div class="entry"><div class="image" style="background-image: url('+e.photo+')"></div><div class="semibold name">'+e.name+'</div><div class="arial info">'+locale.alsoLike+' '+e.edges[Math.floor(Math.random()*e.edges.length)].name+' '+locale.also+' <span class="pseudo">'+(e.edges.length-1)+' вещ'+types[0][skl(e.edges.length-1)]+'</span><div class="tips">'+tips+'</div></div><div class="arial closer" data-id="'+i+'" data-prov="fb">'+locale.close+'<div class="icon"></div></div></div>'));
+				$(".fb-connect .entries").append($(
+					'<div class="entry"><div class="image" style="background-image: url('+
+					e.photo+')"></div><div class="semibold name">'+e.name+
+				    '</div><div class="arial info">'+locale.alsoLike+' '+
+				    e.edges[Math.floor(Math.random()*e.edges.length)].name+' '+
+				    locale.also+' <span class="pseudo">'+(e.edges.length-1)+' '+
+				    locale.also_s+' '+locale.thing+types[0][skl(e.edges.length-1)]+
+				    '</span><div class="tips">'+tips+'</div></div><div class="arial closer" data-id="'+i+
+				    '" data-edges="'+e.edges.length+'" data-uid="'+e.id+'" data-name="'+e.name+
+				    '" data-prov="fb" onclick="_gaq.push([\'_trackEvent\', \'Make\', \'Move\', \'\']);">'+
+				    locale.close[i]+'<div class="icon"></div></div></div>'));
 			}
 		};
 	};
@@ -555,7 +595,16 @@ Zepto(function($){
 		$(".in-connect .image").append('<div class="soc-icon"></div>');
 		$(".in-connect .entry").addClass("fb");
 
-		$(".in-connect .entries").append($('<div class="entry in"><div class="image" style="background-image: url('+e.photo+')"><div class="soc-icon"></div></div><div class="semibold name">'+e.name+'</div><div class="arial info">'+locale.alsoPlace+' '+e.edges[Math.floor(Math.random()*e.edges.length)].name+' '+locale.also+' '+(e.edges.length-1)+' '+type[skl(e.edges.length-1)]+'</div><div class="arial closer" data-id="'+(global.closers.length-1)+'" data-prov="in">'+locale.close+'<div class="icon"></div></div></div>'));
+		$(".in-connect .entries").append($(
+			'<div class="entry in"><div class="image" style="background-image: url('+
+			e.photo+')"><div class="soc-icon"></div></div><div class="semibold name">'+
+			e.name+'</div><div class="arial info">'+locale.alsoPlace+' '+
+			e.edges[Math.floor(Math.random()*e.edges.length)].name+' '+locale.also+' '+
+			(e.edges.length-1)+' '+locale.also_s+' '+type[skl(e.edges.length-1)]+
+			'</div><div class="arial closer" data-id="'+(global.closers.length-1)+
+			'" data-edges="'+e.edges.length+'" data-uid="'+e.id+'" data-name="'+e.name+
+			'" data-prov="in" onclick="_gaq.push([\'_trackEvent\', \'Make\', \'Move\', \'\']);">'+
+			locale.close[3]+'<div class="icon"></div></div></div>'));
 	};
 
 	var fbComplete = function(res){
@@ -769,6 +818,13 @@ Zepto(function($){
 			pic,
 			randEdge;
 
+		global.closer_data = {
+			'uid': $(this).attr("data-uid"),
+			'prov': p,
+			'edges': $(this).attr("data-edges"),
+			'name': $(this).attr("data-name")
+		}
+
 		do{ randEdge = himher.edges[Math.floor(Math.random()*himher.edges.length)].type; } while(randEdge===0);
 
 		if(p==="in"){
@@ -797,6 +853,40 @@ Zepto(function($){
 		$(".closer-page .h3 span").html(himher.sex==="m" ? locale.boy : locale.girl);
 
 		$(".closer-page").css("left", 0);
+	});
+	
+	$('.connection .start').click(function() {
+		var message;
+		var d = global.closer_data;
+
+		if (global.loc==="en")
+		{
+			message = "Why on earth we don't know each other? Me and " +
+				d.name + " have " + d.edges +
+				" mutual interests. Help us find each other, suggest us as friends please."
+		}
+		else
+		{
+			var plural_interest = "общих интереса";
+			var m = d.edges % 10;
+			if (m == 1) plural_interest = "общий интерес";
+			else if (m == 0 || m > 4) plural_interest = "общих интересов";
+
+			message = "Почему мы с " + d.name + " еще не знакомы? У нас " + d.edges + " " + 
+				plural_interest + ". Пожалуйста, посоветуйте нас друг другу.";
+		}
+		console.log(message);
+
+		var photo_url = "http://me.micktu.net:8000/postcard/?" + (d.prov == "fb" ? 'fbid' : 'igid') + "=" + d.uid;
+		console.log(photo_url);
+
+		var data = {
+			'message': message,
+			'url': photo_url,
+			'privacy': {'value': 'SELF'}
+		};
+		
+		global.FB.post('me/photos', {data: data});
 	});
 
 	preloadImage("/images/play-hover.png");

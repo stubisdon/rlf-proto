@@ -1,16 +1,19 @@
-import urllib2, json
+import urllib2, json, io
 from datetime import datetime
+from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from social.apps.django_app.default.models import UserSocialAuth
 from open_facebook import OpenFacebook
 
+from PIL import Image, ImageOps
+
 from realfie.core.forms import FbidForm
-from realfie.core.models import FbUser, FetchTask, InviteEmail
+from realfie.core.models import FbUser, IgUser, FetchTask, InviteEmail
 from realfie.core.tasks import fetch_fb, fetch_ig
 
 class SaveEmailView(View):
@@ -76,8 +79,8 @@ class FetchView(View):
                 fbuser.save()
 
                 # FIXME
-                #task = FetchTask.objects.filter(source='facebook', uid=fbid).order_by('-finished').first()
-                task = None
+                task = FetchTask.objects.filter(source='facebook', uid=fbid).order_by('-finished').first()
+                #task = None
                 if not task or not task.fbusers.count() > 1:
                     task = FetchTask(source='facebook', uid=fbid)
                     task.save()
@@ -120,10 +123,10 @@ class FetchView(View):
         elif source == 'instagram':
             resp = []
             # FIXME
-            #task = FetchTask.objects.filter(pk=251).first()
+            task = FetchTask.objects.filter(pk=251).first()
 
-            #if False and token:
-            if token:
+            if False and token:
+            #if token:
                 task = FetchTask(source='instagram')
                 task.save()
                 fetch_ig.delay(task, token)
@@ -153,3 +156,33 @@ class FetchView(View):
         return JsonResponse({
             'message': 'Something went wrong.',
         })
+
+class PostcardView(View):
+    def get(self, request, *args, **kwargs):
+        path = settings.STATIC_ROOT + '/www/images/pm/'
+        uid = request.GET.get('fbid')
+        is_ig = False
+
+        if not uid:
+            is_ig = True
+            uid = request.GET.get('igid')
+
+        if not is_ig:
+            user = FbUser.objects.filter(fbid=uid).first()
+        else:
+            user = IgUser.objects.filter(igid=uid).first()
+
+        fd = urllib2.urlopen(user.photo)
+        photo_im = Image.open(io.BytesIO(fd.read()))
+        bg_im = Image.open(path + 'posting6.png')
+        mask_im = Image.open(path + 'circle-mask.png').convert('L')
+        circle_im = Image.open(path + 'circle-stroke.png')
+
+        cropped_im = photo_im.resize(mask_im.size, Image.ANTIALIAS)
+
+        bg_im.paste(cropped_im, (130, 120), mask_im)
+        bg_im.paste(circle_im, (129, 119), circle_im)
+
+        response = HttpResponse(content_type="image/png")
+        bg_im.save(response, "PNG")
+        return response

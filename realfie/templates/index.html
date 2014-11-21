@@ -15,36 +15,12 @@
     <link rel="stylesheet" href="/index.css" />
     <link rel="stylesheet" href="/libraries/animate.css" />
 
-    <script> <!-- GA -->
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-55920352-1', 'auto');
-    ga('send', 'pageview');
-
-    </script>
-
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">(function (d, w, c) { 
-      (w[c] = w[c] || []).push(function() {
-        try { w.yaCounter26702310 = new Ya.Metrika({id:26702310, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");
-    </script>
-    <noscript>
-      <div><img src="//mc.yandex.ru/watch/26702310" style="position:absolute; left:-9999px;" alt="" /></div>
-    </noscript>
-        <!-- /Yandex.Metrika counter -->
-
-
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
   </head>
 
   <body>
-
     <div class="background-video" id="main-video">
       <div class="dataH h">
         <div class="logo"></div>
@@ -54,12 +30,11 @@
       <div class="data">
         <div class="logo"></div>
         <div class="semibold slogan">This app will find your soulmate<br>by interests</div>
-        <div class="play" 
-          onClick="_gaq.push(['_trackEvent', 'Useful', 'Video', '']);"></div>
+        <div class="play" onClick="_gaq.push(['_trackEvent', 'Video', 'Play', '']);"></div>
       </div>
       <div class="subscribe">
         <div class="title light">Be the first to download Realfie</div>
-        <div class="top-input" onClick="_gaq.push(['_trackEvent', 'Email', 'Click', '']);"><input type="text" id="top-input" placeholder="Your e-mail" onkeyup="blockMove"><div class="button topbtn" onClick="_gaq.push(['_trackEvent', 'Email', 'Send', '']);"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
+        <div class="top-input" onClick="_gaq.push(['_trackEvent', 'Email_header', 'Click', '']);"><input type="text" id="top-input" placeholder="Your e-mail" onkeyup="blockMove"><div class="button topbtn" onClick="_gaq.push(['_trackEvent', 'Email_header', 'Send', '']);"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
       c-0.388-0.388-1.017-0.388-1.404,0c-0.388,0.388-0.388,1.017,0,1.404l5.309,5.309H1c-0.552,0-1,0.448-1,1c0,0.552,0.448,1,1,1
       h18.596l-5.309,5.309c-0.388,0.388-0.388,1.017,0,1.404s1.017,0.388,1.404,0l6.958-6.959c0.02-0.017,0.045-0.023,0.064-0.041
       c0.031-0.031,0.031-0.074,0.057-0.108c0.085-0.105,0.145-0.22,0.181-0.344c0.013-0.048,0.022-0.09,0.027-0.139
@@ -172,7 +147,7 @@
       <div class="data">
         <div class="semibold big">Connect your Facebook profile</div>
         <div class="light small">and see who Realfie will match you with</div>
-        <div class="semibold facebook" onClick="_gaq.push(['_trackEvent', 'Snejanna', 'Start', '']);">Connect to Facebook</div>
+        <div class="semibold facebook" onClick="_gaq.push(['_trackEvent', 'FB', 'Connect', '']);">Connect to Facebook</div>
       </div>
       <div class="loader">
         <div class="left l1"></div>
@@ -190,13 +165,13 @@
       <div class="paging">
         <div class="first"></div><div class="second"></div>
       </div>
-      <div class="semibold h1">We have connected your Facebook account</div>
-      <div class="semibold h3">And that's what we found</div>
+      <div class="semibold h1">Why on earth aren’t you friends yet?</div>
+      <div class="semibold h3"></div>
       <div class="entries"></div>
       <div class="add">
         <div class="dude"></div>
-        <div class="semibold info">Do you want to find people that go to the same places as you?</div>
-        <div class="arial instagram">Connect to Instagram</div>
+        <div class="semibold info">Connect Instagram for more things in common</div>
+        <div class="arial instagram" onClick="_gaq.push(['_trackEvent', 'IG', 'Connect', '']);">Connect Instagram</div>
       </div>
     </div>
 
@@ -213,13 +188,13 @@
       <div class="paging">
         <div class="first"></div><div class="second"></div><div class="third"></div><div class="fourth"></div>
       </div>
-      <div class="semibold h1">If you think<span class="y"></span>, that she is <span class="hh">the one</span> — make a move!</div>
+      <div class="semibold h1">If you think<span class="y"></span>, that <span class="hh">she is</span> the one — make a move!</div>
       <div class="semibold h3 f">Share this post on your wall<span>and a girl</span> would be mentioned</div>
       <div class="main">
         <div class="you"></div>
         <div class="connection">
-          <div class="arial tip">Who knew that you <span>listen to the same artist</span></div>
-          <div class="arial start">Make your move</div>
+          <div class="arial tip">Who knew that you both <span>listen to the same artist</span></div>
+          <div class="arial start" onClick="_gaq.push(['_trackEvent', 'Make', 'Post', '']);">Make your move</div>
         </div>
         <div class="himher"><div class="soc-icon"></div></div>
       </div>
@@ -229,7 +204,7 @@
       <div class="top">
         <div class="semibold h1">Interested in the project?</div>
         <div class="light h3">Be the first to download Realfie</div>
-        <div class="foot-input" onClick="_gaq.push(['_trackEvent', 'Email-down', 'Click', '']);"><input type="text" id="foot-input" placeholder="Your e-mail"><div class="button btmbtn" onClick="_gaq.push(['_trackEvent', 'Email-down', 'Send', '']);"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
+        <div class="foot-input" onClick="_gaq.push(['_trackEvent', 'Email_bottom', 'Click', '']);"><input type="text" id="foot-input" placeholder="Your e-mail"><div class="button btmbtn" onClick="_gaq.push(['_trackEvent', 'Email_bottom', 'Send', '']);"><svg><g><path style="fill-rule:evenodd;clip-rule:evenodd;" d="M22.713,7.291c-0.02-0.02-0.046-0.026-0.066-0.044l-6.956-6.956
       c-0.388-0.388-1.017-0.388-1.404,0c-0.388,0.388-0.388,1.017,0,1.404l5.309,5.309H1c-0.552,0-1,0.448-1,1c0,0.552,0.448,1,1,1
       h18.596l-5.309,5.309c-0.388,0.388-0.388,1.017,0,1.404s1.017,0.388,1.404,0l6.958-6.959c0.02-0.017,0.045-0.023,0.064-0.041
       c0.031-0.031,0.031-0.074,0.057-0.108c0.085-0.105,0.145-0.22,0.181-0.344c0.013-0.048,0.022-0.09,0.027-0.139
@@ -237,7 +212,7 @@
         <div class="semibold thankyou h">Thank you! News will come shortly.</div>
       </div>
       <!--<div class="mid">
-        <div class="semibold h1">Publications about Realfie</div>
+        <div class="semibold h1">We made the news/div>
         <div class="press">
           <div></div>
           <div></div>
@@ -250,16 +225,8 @@
       <div class="bot">
         <div class="tell-friends semibold">Tell your friends about us</div>
         <div class="soc"><!--<a class="fb" href="https://www.facebook.com/" target="_blank"><div></div></a><a class="twi" href="https://www.facebook.com/" target="_blank"><div></div></a><a class="vk" href="https://www.facebook.com/" target="_blank"><div></div></a><a class="goo" href="https://www.facebook.com/" target="_blank"><div></div></a>-->
-        <script type="text/javascript">(function() {
-          if (window.pluso)if (typeof window.pluso.start == "function") return;
-          if (window.ifpluso==undefined) { window.ifpluso = 1;
-            var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-            s.type = 'text/javascript'; s.charset='UTF-8'; s.async = true;
-            s.src = ('https:' == window.location.protocol ? 'https' : 'http')  + '://share.pluso.ru/pluso-like.js';
-            var h=d[g]('body')[0];
-            h.appendChild(s);
-        }})();</script>
-        <div class="pluso" data-background="transparent" data-options="medium,round,line,horizontal,nocounter,theme=04" data-services="facebook,twitter,vkontakte,google" data-url="http://realfie.com" data-title="Realfie" data-description="Realfie app will find your soulmate by interests" onClick="_gaq.push(['_trackEvent', 'Bottom', 'Share', '']);"></div></div>
+       <div class="pluso" data-background="transparent" data-options="medium,round,line,horizontal,counter,theme=04" data-services="facebook,twitter,vkontakte,google" data-url="http://realfie.com" data-title="Realfie" data-description="Realfie app will find your soulmate by interests"></div>
+       </div>
         <div class="logo"></div>
         <div class="copyright light">This app will find your soulmate by interests. All rights reserved.<br>realfie.com</div>
       </div>
@@ -275,5 +242,32 @@
     <script src="/libraries/oauth.min.js"></script>
 	  <script src="/index.js"></script>
 
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-55920352-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter26702310 = new Ya.Metrika({id:26702310, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");
+    </script>
+    <noscript><div><img src="//mc.yandex.ru/watch/26702310" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+    <script type="text/javascript">(function() {
+    if (window.pluso)if (typeof window.pluso.start == "function") return;
+    if (window.ifpluso==undefined) { window.ifpluso = 1;
+      var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+      s.type = 'text/javascript'; s.charset='UTF-8'; s.async = true;
+      s.src = ('https:' == window.location.protocol ? 'https' : 'http')  + '://share.pluso.ru/pluso-like.js';
+      var h=d[g]('body')[0];
+      h.appendChild(s);
+    }})();</script>
   </body>
 </html>
