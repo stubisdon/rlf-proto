@@ -628,7 +628,7 @@ input {
 }
 
 .scroll-down.r {
-	color: #ffffff;
+	color: #000;
 }
 
 .scroll-down.w {
@@ -1692,6 +1692,7 @@ input {
 		margin-bottom: 20px;
 	}
 	.subscribe .thankyou {
+		font-size: 2.7vh;
 		width: 100%;
 		margin-top: -45px;
 		left: 0;
@@ -1734,6 +1735,11 @@ input {
 	.surf, .surf-shadow, .books {
 		opacity: 0!important;
 	}
+
+	.white-board .slogan, .sloganp {
+		font-size: 4vh !important;
+	}
+
 	.sloganp {
 		top: 20%;
 	}
@@ -1805,10 +1811,10 @@ input {
 		text-align: center;
 	}
 	.connect .add .instagram {
-		width: 100px;
+		width: 120px;
 		height: 34px;
 		font-size: 10px;
-		margin-left: calc(50% - 50px);
+		margin-left: calc(50% - 60px);
 		margin-top: 5px;
 		background-image: none;
 		padding: 0;
