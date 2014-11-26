@@ -1,4 +1,4 @@
-import urllib2, json, io
+import urllib2, json, io, random
 from datetime import datetime
 from django.conf import settings
 from django.shortcuts import render
@@ -162,6 +162,13 @@ class PostcardView(View):
         uid = request.GET.get('fbid')
         is_ig = False
 
+        bg_filename = 'bg-blue.png'
+        paste_x = 130;
+        paste_y = 120;
+        if random.randint(0, 1):
+            bg_filename = 'bg-red.png'
+            paste_x = 260;
+
         if not uid:
             is_ig = True
             uid = request.GET.get('igid')
@@ -173,14 +180,14 @@ class PostcardView(View):
 
         fd = urllib2.urlopen(user.photo)
         photo_im = Image.open(io.BytesIO(fd.read()))
-        bg_im = Image.open(path + 'posting6.png')
+        bg_im = Image.open(path + bg_filename)
         mask_im = Image.open(path + 'circle-mask.png').convert('L')
         circle_im = Image.open(path + 'circle-stroke.png')
 
         cropped_im = photo_im.resize(mask_im.size, Image.ANTIALIAS)
 
-        bg_im.paste(cropped_im, (130, 120), mask_im)
-        bg_im.paste(circle_im, (129, 119), circle_im)
+        bg_im.paste(cropped_im, (paste_x, paste_y), mask_im)
+        bg_im.paste(circle_im, (paste_x - 1, paste_y - 1), circle_im)
 
         response = HttpResponse(content_type="image/png")
         bg_im.save(response, "PNG")

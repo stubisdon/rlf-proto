@@ -28,7 +28,7 @@ var locale = {
 	alsoPlace: "Также как и вы ходит в",
 	also: "и еще",
 	also_s: "",
-	close: ["Привлеки внимание", "Познакомся", "Сделай первый шаг", "Начни разговор"],
+	close: ["Привлеки внимание", "Познакомься", "Сделай первый шаг", "Начни разговор"],
 	him: "тот самый",
 	her: "та самая",
 	boy: "парень",
@@ -62,6 +62,23 @@ if (window.location.href.indexOf('/eng/') > -1)
 }
 
 Zepto(function($){
+	var cropVideo = function() {
+		var vid = $('.background-video .bg video');
+		var fitclass = 'video-fitwidth';
+		var win = $(window);
+
+		if (win.width() / win.height() > 16 / 9) {
+			vid.addClass(fitclass);
+		}
+		else
+		{
+			vid.removeClass(fitclass);
+		}
+	}
+
+	cropVideo();
+	$(window).resize(cropVideo);
+
 	$(".scroll-down.r").css("opacity", 1);
 
 	setTimeout(function(){
@@ -661,9 +678,10 @@ Zepto(function($){
 						};
 					break;
 					case 'failed':
+						clearInterval(global.inloop);
 						stopLoAnimation();
 						$(".error span").html(res.reason);
-						$(".error").addClass("zoomIn");
+						$(".error").addClass("zoomIn in");
 					break;
 				};
 			}
@@ -737,8 +755,17 @@ Zepto(function($){
 	});
 
 	$(".ok").click(function(){
-		$(".error").removeClass("zoomIn");
-		cancelFacebook();
+		var err = $(".error");
+		err.removeClass("zoomIn");
+		
+		if (err.hasClass("in")) {
+			err.removeClass("in");
+			$(".fb-connect").css("left", "0");
+		}
+		else
+		{
+			cancelFacebook();
+		}
 	});
 
 	$(".first").click(function(){
@@ -782,13 +809,14 @@ Zepto(function($){
 	/**$("body").on("focus", "input", function(){
 		global.locked = true;
 	});*/
-
+	/*
 	$("body").on("blur", "input", function(){
 		setTimeout(function(){
 			$(window).scrollTop(global.lasttop);
 			global.locked = false;
 		}, 200);
 	});
+	*/
 
 	$(".topbtn").click(function(){
 		var v = $("#top-input").val();

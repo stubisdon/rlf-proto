@@ -91,12 +91,11 @@ input {
 	background-position: center;
 }
 
-/* Fit to width
-/* 
-.background-video .bg video {
-	width: 100%;
+/* Fit to width */
+.video-fitwidth {
+	width: 100% !important;
+	height: auto !important;
 }
-*/
 
 .background-video .fg {
 	background-image: url("/images/video-fg.gif");
@@ -339,7 +338,7 @@ input {
 
 .stripes > * .bold {
 	font-size: 2.4vh;
-	bottom: calc(50% + 140px);
+	bottom: calc(50% + 15vh);
 	line-height: 3.3vh;
 }
 
@@ -618,7 +617,7 @@ input {
 	margin-left: -75px;
 	position: fixed;
 	left: 50%;
-	bottom: 5vh;
+	bottom: 90px;
 	text-align: center;
 	opacity: 0;
 	-webkit-transition: all .3s ease-out;
@@ -1609,6 +1608,26 @@ input {
     -o-transition: opacity .2s ease-out;
     transition: opacity .2s ease-out;
 	pointer-events: none;
+}
+
+
+@media (max-width: 1000px) {
+	.stripes > * .bold, .stripes > * .semibold {
+		padding: 0 25px 0 15px;
+	}
+
+	.stripes > * .bold {
+		font-size: 2.4vh;
+		bottom: calc(50% + 15vh);
+		line-height: 3.3vh;
+	}
+
+	.stripes > * .semibold {
+		font-size: 4.5vh;
+		letter-spacing: 1px;
+		bottom: calc(50% + 20px);
+		line-height: 4.5vh;
+	}
 }
 
 @media (max-width: 800px) {
