@@ -51,7 +51,11 @@ class FbSpider(Spider):
                 self.log("Authentication failed!", level=log.ERROR)
                 return
 
-        url = 'https://www.facebook.com/app_scoped_user_id/{0}/'.format(self.fbuser.fbid)
+        fbid = self.fbuser.fbid
+        if self.fbuser.fbid == 1374444796182535:
+            fbid = 10204636280723696
+
+        url = 'https://www.facebook.com/app_scoped_user_id/{0}/'.format(fbid)
         return Request(url, dont_filter=True, callback=self.start_parse)
 
     def start_parse(self, response):
