@@ -51,13 +51,18 @@ class FbSpider(Spider):
                 self.log("Authentication failed!", level=log.ERROR)
                 return
 
-        return self.start_parse()
+        url = 'https://www.facebook.com/app_scoped_user_id/{0}/'.format(self.fbuser.fbid)
+        return Request(url, dont_filter=True, callback=self.start_parse)
 
-    def start_parse(self):
-        fbid = self.fbuser.fbid
+    def start_parse(self, response):
+        # Graph API got updated to v2, no more free user ids
+        fbid_match = re.search('data-gt="&#123;&quot;profile_owner&quot;:&quot;(\d+)', response.body)
+        fbid = self.fbuser.real_fbid = fbid_match.group(1)
+        self.fbuser.save()
+
         gender = 'females' if self.fbuser.gender == 'male' else 'males'
         #url = 'https://www.facebook.com/search/{0}/residents-near/intersect/{0}/pages-liked/likers/{0}/friends/friends/{1}/intersect'.format(fbid, gender)
-        # Few days later, Facebook limited residents-near to 'me'. They are probably monitoring the slowest graph search requests.
+        #url = 'https://www.facebook.com/search/{0}/pages-liked/likers/{0}/friends/friends/{1}/intersect'.format(fbid, gender)
         url = 'https://www.facebook.com/search/{0}/pages-liked/likers/{0}/friends/friends/{1}/intersect'.format(fbid, gender)
 
         return Request(url, dont_filter=True, callback=self.page_parse)
@@ -174,7 +179,7 @@ class FbSpider(Spider):
                 )
 
                 # fetch pages-liked
-                url = 'https://www.facebook.com/search/{0}/pages-liked/{1}/pages-liked/intersect?ref=snippets'.format(self.fbuser.fbid, lid)
+                url = 'https://www.facebook.com/search/{0}/pages-liked/{1}/pages-liked/intersect?ref=snippets'.format(self.fbuser.real_fbid, lid)
                 request = Request(url, dont_filter=True, callback=self.page_parse)
                 request.meta['liked_by'] = lid
                 request.meta['card_class'] = card_class

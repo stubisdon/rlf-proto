@@ -11,6 +11,7 @@ class FbUser(models.Model):
     )
 
     fbid = models.BigIntegerField(null=True)
+    real_fbid = models.BigIntegerField(null=True)
     name = models.CharField(max_length=80, null=True)
     birthday = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=10, choices=SEX_CHOICES, null=True)
