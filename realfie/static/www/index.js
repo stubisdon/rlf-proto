@@ -1,4 +1,4 @@
-var global = { FB: null, loc: 'ru', closer_data: {}, reqspeed: 3000, firstH: $(window).height(), locked: false, lasttop: 0, old: 0, oTop: 0, play: false, inputhover: false, lastIcon: null, closers: [], reqi: 0, fbcancel: false, fbloop: null, fbuser: 0, fbgender: null, incancel: false, inloop: null, inuser: 0, inimage: null, inflag: false, anim: null, anim2: null, ianim: 1 };
+var global = { FB: null, loc: 'ru', closer_data: {}, progressIndex: 0, reqspeed: 3000, firstH: $(window).height(), locked: false, lasttop: 0, old: 0, oTop: 0, play: false, inputhover: false, lastIcon: null, closers: [], reqi: 0, fbcancel: false, fbloop: null, fbuser: 0, fbgender: null, incancel: false, inloop: null, inuser: 0, inimage: null, inflag: false, anim: null, anim2: null, ianim: 1 };
 
 var types = [	["ь", "и", "ей"], // не редактировать
 				["место", "места", "мест", "ходите в одно и то же место"], // 1
@@ -32,7 +32,14 @@ var locale = {
 	him: "тот самый",
 	her: "та самая",
 	boy: "парень",
-	girl: "девушка"
+	girl: "девушка",
+	progressMessages: [
+		"Взешиваем лайки...",
+		"Подсчитываем шейры...",
+		"Примеряем шапочку...",
+		"Оу... Кажется, мы что-то нашли",
+		"Не переживай, это между нами :)"
+	]
 };
 
 var locale_en = {
@@ -51,7 +58,14 @@ var locale_en = {
 	him: "he is",
 	her: "she is",
 	boy: "guy",
-	girl: "girl"
+	girl: "girl",
+	progressMessages: [
+		"Calculating likes",
+		"Measuring shares",
+		"Ohh, found some :)",
+		"Are you seriously?",
+		"Don't worry, I wouldn't tell."
+	]
 };
 
 if (window.location.href.indexOf('/eng/') > -1)
@@ -94,6 +108,20 @@ Zepto(function($){
 			el.attr('onclick', '_gaq.push([\'_trackEvent\', \'Share\', \''+title+'\', \'\']);');
 		});
 	},5000);
+
+	var getNextProgressMessage = function()
+	{
+		var message = locale.progressMessages[Math.floor(global.progressIndex / 2)];
+		
+		global.progressIndex++;
+
+		if (global.progressIndex >= locale.progressMessages.length * 2)
+		{
+			global.progressIndex = 0;
+		}
+
+		return message;
+	}
 
 	OAuth.initialize('l_apl0rGv3ODyhXFCHLj16EdcyY');
 
@@ -633,7 +661,8 @@ Zepto(function($){
 						$(".loader-video .status").html(locale.started);
 					break;
 					case 'ongoing':
-						$(".loader-video .status").html(locale.progress+" "+Math.round(res.progress*100)+"%");
+						//$(".loader-video .status").html(locale.progress+" "+Math.round(res.progress*100)+"%");
+						$(".loader-video .status").html(getNextProgressMessage());
 					break;
 					case 'completed':
 						clearInterval(global.fbloop);

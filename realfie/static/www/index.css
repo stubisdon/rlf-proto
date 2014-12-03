@@ -933,6 +933,10 @@ input {
 	margin-left: -370px;
 }
 
+.connect .add.shorter {
+	padding-left: 150px;
+}
+
 .connect .add > * {
 	float: left;
 	margin-right: 20px;
@@ -950,6 +954,10 @@ input {
 	width: 400px;
 	font-size: 15px;
 	text-align: left;
+}
+
+.connect .add.shorter .info {
+	width: 250px;
 }
 
 .connect .add .instagram {
@@ -1610,6 +1618,12 @@ input {
 	pointer-events: none;
 }
 
+div.lang-link {
+	position: fixed;
+	top: 4px;	
+	right: 4px;
+	z-index: 10000;
+}
 
 @media (max-width: 1000px) {
 	.stripes > * .bold, .stripes > * .semibold {
@@ -1634,6 +1648,11 @@ input {
 	video {
 		display: none;
 	}
+
+	#second .bg {
+		background-image: url("/images/second-bg-small.jpg");
+	}
+
 	#main-video .data {
 		/*
 		top: 0%;
@@ -1806,7 +1825,7 @@ input {
 	}
 	.connect .entries .entry .info {
 		font-size: 1.8vh;
-		height: 10vh;
+		height: 12vh;
 	}
 	.connect .entries .entry .closer {
 		font-size: 8px;

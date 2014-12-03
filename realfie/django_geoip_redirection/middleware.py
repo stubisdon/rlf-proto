@@ -42,6 +42,6 @@ class LocationMiddleWare(object):
         country = get_country_request(ip_address)
 
         if country in self.CIS_COUNTRIES:
-            return HttpResponseRedirect('/rus/')
+            return HttpResponseRedirect('/ru/')
         else:
-            return HttpResponseRedirect('/eng/')
+            return HttpResponseRedirect('/en/')
