@@ -21,7 +21,7 @@ class FbUser(models.Model):
     location_name = models.CharField(max_length=80, null=True)
     locale = models.CharField(max_length=10, null=True)
     task = models.ForeignKey('FetchTask', null=True, related_name='fbusers')
-
+    email = models.EmailField(max_length=80, null=True)
 
 class IgUser(models.Model):
     def __unicode__(self):
@@ -31,6 +31,13 @@ class IgUser(models.Model):
     name = models.CharField(max_length=80, null=True)
     photo = models.CharField(max_length=255, null=True)
     task = models.ForeignKey('FetchTask', null=True, related_name='igusers')
+
+class IgHashtag(models.Model):
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=80, null=True)
+    liked_by = models.ManyToManyField(IgUser, related_name='likes') 
 
 class FetchTask(models.Model):
     def __unicode__(self):

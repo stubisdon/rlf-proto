@@ -69,6 +69,7 @@ class FetchView(View):
                 except KeyError:
                     pass
 
+                fbuser.email = response.get('email')
                 fbuser.gender = response.get('gender')
                 fbuser.link = response.get('link')
                 fbuser.locale = response.get('locale')
@@ -130,19 +131,23 @@ class FetchView(View):
                 task.save()
                 fetch_ig.delay(task, token)
             elif task.status == 'completed':
-                iguser = task.igusers.first()
+                iguser = IgUser.objects.filter(igid=task.uid).first()
+                iguser_m = task.igusers.first()
 
-                p = {
-                    'name': '',
-                    'type': 5,
-                }
+                tags = []
+                
+                for tag in iguser.likes.all() & iguser_m.likes.all():
+                    tags.append({
+                        'name': tag.name,
+                        'type': 5
+                    })
                 
                 resp = [{
-                    'id': iguser.igid,
-                    'name': iguser.name,
-                    'photo': iguser.photo,
+                    'id': iguser_m.igid,
+                    'name': iguser_m.name,
+                    'photo': iguser_m.photo,
                     'sex': 'f',
-                    'edges': [p],
+                    'edges': tags,
                 }]
 
             return JsonResponse({

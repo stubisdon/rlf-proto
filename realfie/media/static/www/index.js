@@ -1,7 +1,7 @@
 var global = { FB: null, loc: 'ru', closer_data: {}, progressIndex: 0, reqspeed: 3000, firstH: $(window).height(), locked: false, lasttop: 0, old: 0, oTop: 0, play: false, inputhover: false, lastIcon: null, closers: [], reqi: 0, fbcancel: false, fbloop: null, fbuser: 0, fbgender: null, incancel: false, inloop: null, inuser: 0, inimage: null, inflag: false, anim: null, anim2: null, ianim: 1 };
 
 var types = [	["ь", "и", "ей"], // не редактировать
-				["место", "места", "мест", "ходите в одно и то же место"], // 1
+				["хештег", "хештега", "хештегов", "используете один и тот же хештег"], // 1
 				["блюдо", "блюда", "блюд", "любите одно и то же блюдо"], // 2
 				["фильм", "фильма", "фильмов", "смотрели один и тот же фильм"], //3
 				["книга", "книги", "книг", "читали одну и ту же книгу"], //4
@@ -9,7 +9,7 @@ var types = [	["ь", "и", "ей"], // не редактировать
 			];
 
 var types_en = [	["", "s", "s"], // не редактировать
-				["place", "places", "places", "visited the same place"], // 1
+				["hashtag", "hashtags", "hashtags", "used the same hashtag"], // 1
 				["dish", "dishes", "dishes", "like the same dish"], // 2
 				["movie", "movies", "movies", "watched that movie"], //3
 				["book", "books", "books", "read that book"], //4
@@ -20,12 +20,12 @@ var locale = {
 	restrict: "Разрешите сервису общаться с Realfie во всплывающем окне",
 	almostThere: "Подожди немного, пока Realfie изучает твои интересы",
 	started: "Оу...",
-	places: ["место", "места", "мест"],
+	places: ["хештег", "хештега", "хештегов"],
 	progress: "Оу... Кажется, мы что-то нашли",
 	uniq: "Лайкни в Facebook что-нибудь интересное и возвращайся обратно!",
 	thing: "вещ",
 	alsoLike: "Также как и вы любит",
-	alsoPlace: "Также как и вы ходит в",
+	alsoPlace: "Любит использовать",
 	also: "и еще",
 	also_s: "",
 	close: ["Привлеки внимание", "Познакомься", "Сделай первый шаг", "Начни разговор"],
@@ -33,8 +33,9 @@ var locale = {
 	her: "та самая",
 	boy: "парень",
 	girl: "девушка",
+	startClicked: "Спасибо!",
 	progressMessages: [
-		"Взешиваем лайки...",
+		"Взвешиваем лайки...",
 		"Подсчитываем шейры...",
 		"Примеряем шапочку...",
 		"Оу... Кажется, мы что-то нашли",
@@ -46,12 +47,12 @@ var locale_en = {
 	restrict: "Please allow Realfie to connect in the pop-up window",
 	almostThere: "Please wait while Realfie analyzes your interests",
 	started: "Ohh, found some.",
-	places: ["place", "places", "places"],
+	places: ["hashtag", "hashtags", "hashtags"],
 	progress: "Realfie в прогрессе",
 	uniq: "Could be your privacy settings, or you just haven't liked enough pages on Facebook.",
 	thing: "thing",
 	alsoLike: "Also likes",
-	alsoPlace: "Also visited",
+	alsoPlace: "You both used",
 	also: "and",
 	also_s: "more",
 	close: ["Make your move", "Start talking", "Wink", "Ask about Friday"],
@@ -59,6 +60,7 @@ var locale_en = {
 	her: "she is",
 	boy: "guy",
 	girl: "girl",
+	startClicked: "Sweet!",
 	progressMessages: [
 		"Calculating likes",
 		"Measuring shares",
@@ -68,7 +70,8 @@ var locale_en = {
 	]
 };
 
-if (window.location.href.indexOf('/eng/') > -1)
+var href = window.location.href;
+if (href.indexOf('/en/') > -1 || href.indexOf('/eng/') > -1)
 {
 	locale = locale_en;
 	types = types_en;
@@ -644,8 +647,8 @@ Zepto(function($){
 		$(".in-connect .entries").append($(
 			'<div class="entry in"><div class="image" style="background-image: url('+
 			e.photo+')"><div class="soc-icon"></div></div><div class="semibold name">'+
-			e.name+'</div><div class="arial info">'+locale.alsoPlace+' '+
-			e.edges[Math.floor(Math.random()*e.edges.length)].name+' '+locale.also+' '+
+			e.name+'</div><div class="arial info">'+locale.alsoPlace+' <a href="">#'+
+			e.edges[Math.floor(Math.random()*e.edges.length)].name+'</a> '+locale.also+' '+
 			(e.edges.length-1)+' '+locale.also_s+' '+type[skl(e.edges.length-1)]+
 			'</div><div class="arial closer" data-id="'+(global.closers.length-1)+
 			'" data-edges="'+e.edges.length+'" data-uid="'+e.id+'" data-name="'+e.name+
@@ -914,6 +917,15 @@ Zepto(function($){
 	});
 	
 	$('.connection .start').click(function() {
+		if ($(this).hasClass("clicked")) return;
+
+		$(this).text(locale.startClicked).addClass("clicked");
+
+		setTimeout(function() {
+			$(window).scrollToTop($(window).height() * 13);
+			$('#foot-input').focus();
+		}, 500);
+
 		var message;
 		var d = global.closer_data;
 
@@ -933,10 +945,10 @@ Zepto(function($){
 			message = "Почему мы с " + d.name + " еще не знакомы? У нас " + d.edges + " " + 
 				plural_interest + ". Пожалуйста, посоветуйте нас друг другу.";
 		}
-		console.log(message);
+		//console.log(message);
 
 		var photo_url = "http://me.micktu.net:8000/postcard/?" + (d.prov == "fb" ? 'fbid' : 'igid') + "=" + d.uid;
-		console.log(photo_url);
+		//console.log(photo_url);
 
 		var data = {
 			'message': message,

@@ -12,7 +12,10 @@ class FbUserAdmin(ModelAdmin):
         return ", ".join([p.name for p in obj.likes.all()])
 
 class IgUserAdmin(ModelAdmin):
-    pass
+    list_display = ['name', 'get_likes']
+        
+    def get_likes(self, obj):
+        return ", ".join([p.name for p in obj.likes.all()])
 
 class FetchTaskAdmin(ModelAdmin):
     inlines = [
