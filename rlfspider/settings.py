@@ -16,7 +16,7 @@ BOT_NAME = 'rlfspider'
 SPIDER_MODULES = ['rlfspider.spiders']
 NEWSPIDER_MODULE = 'rlfspider.spiders'
 
-USER_AGENT = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36'
+USER_AGENT = 'Realfie/1.0'
 MEMUSAGE_REPORT = True
 
 LOG_LEVEL = 'INFO'
