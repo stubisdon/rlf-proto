@@ -924,7 +924,7 @@ Zepto(function($){
 		setTimeout(function() {
 			$(window).scrollToTop($(window).height() * 13);
 			$('#foot-input').focus();
-		}, 500);
+		}, 1000);
 
 		var message;
 		var d = global.closer_data;
@@ -947,9 +947,7 @@ Zepto(function($){
 		}
 		//console.log(message);
 
-		var photo_url = "http://me.micktu.net:8000/postcard/?" + (d.prov == "fb" ? 'fbid' : 'igid') + "=" + d.uid;
-		//console.log(photo_url);
-
+		var photo_url = window.location.href.replace(/\/\w+\/$/, "") + "/postcard/?" + (d.prov == "fb" ? 'fbid' : 'igid') + "=" + d.uid;
 		var data = {
 			'message': message,
 			'url': photo_url,
